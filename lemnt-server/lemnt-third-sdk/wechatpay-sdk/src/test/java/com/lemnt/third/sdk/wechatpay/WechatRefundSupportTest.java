@@ -6,6 +6,7 @@ import com.wechat.pay.java.service.refund.model.Amount;
 import com.wechat.pay.java.service.refund.model.CreateRequest;
 import com.wechat.pay.java.service.refund.model.QueryByOutRefundNoRequest;
 import com.wechat.pay.java.service.refund.model.Refund;
+import com.wechat.pay.java.service.refund.model.RefundNotification;
 import com.wechat.pay.java.service.refund.model.Status;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ class WechatRefundSupportTest {
     void createMapsBusinessFieldsAndReturnsYuanAmount() {
         when(service.create(any())).thenReturn(channelRefund("PR1", "WR1", 800, Status.SUCCESS));
 
-        var result = WechatRefundSupport.create(service, command);
+        var result = WechatRefundSupport.create(service, command, "https://pay.example.com/notify/refund");
 
         ArgumentCaptor<CreateRequest> captor = ArgumentCaptor.forClass(CreateRequest.class);
         verify(service).create(captor.capture());
@@ -38,6 +39,7 @@ class WechatRefundSupportTest {
         assertEquals("PAY1", request.getOutTradeNo());
         assertEquals("PR1", request.getOutRefundNo());
         assertEquals("售后RF1", request.getReason());
+        assertEquals("https://pay.example.com/notify/refund", request.getNotifyUrl());
         assertEquals(800L, request.getAmount().getRefund());
         assertEquals(800L, request.getAmount().getTotal());
         assertEquals("CNY", request.getAmount().getCurrency());
@@ -46,6 +48,23 @@ class WechatRefundSupportTest {
         assertEquals("PAY1", result.outTradeNo());
         assertEquals(new BigDecimal("8.00"), result.refundAmount());
         assertEquals(WechatRefundStatus.SUCCESS, result.status());
+    }
+
+    @Test
+    void notificationUsesRefundStatusAndRejectsAnUnexpectedCurrency() {
+        var notification = new RefundNotification();
+        notification.setRefundId("WR1");
+        notification.setOutRefundNo("PR1");
+        notification.setOutTradeNo("PAY1");
+        notification.setRefundStatus(Status.SUCCESS);
+        var amount = new Amount();
+        amount.setRefund(800L);
+        notification.setAmount(amount);
+        var result = WechatRefundSupport.notification(notification);
+        assertEquals(WechatRefundStatus.SUCCESS, result.status());
+        assertEquals(new BigDecimal("8.00"), result.refundAmount());
+        amount.setCurrency("USD");
+        assertThrows(IllegalStateException.class, () -> WechatRefundSupport.notification(notification));
     }
 
     @Test

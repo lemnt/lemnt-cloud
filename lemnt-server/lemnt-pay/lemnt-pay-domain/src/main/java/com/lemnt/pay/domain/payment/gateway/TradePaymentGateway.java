@@ -48,6 +48,9 @@ public interface TradePaymentGateway {
      */
     List<PaymentRecord> findByOrderNo(String orderNo);
 
+    /** 按主键扫描有应用归属的待支付渠道单。 */
+    List<PaymentRecord> waitingForQuery(long afterId, int limit);
+
     /**
      * 标记关闭。
      */

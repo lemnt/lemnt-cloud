@@ -108,6 +108,7 @@ class ControllerMappingTest {
                         GET /trade/app/payment-channels
                         POST /trade/app/payments/{paymentNo}/sandbox-pay
                         POST /trade/payment/notify/{appKey}/{channel}
+                        POST /trade/payment/notify/{appKey}/{channel}/refund
                         GET /trade/app/delivery/expresses
                         GET /trade/app/delivery/pick-up-stores
                         GET /trade/admin/delivery/pick-up-stores trade:pick-up-store:list

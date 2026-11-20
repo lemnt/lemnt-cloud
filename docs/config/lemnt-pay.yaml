@@ -31,14 +31,10 @@ dubbo:
     retries: 0
     timeout: ${DUBBO_TIMEOUT_MS:10000}
 
-commerce:
-  outbox:
-    # 审核完成后与正式消费者一起开启；停用不会删除原待投递记录。
-    enabled: ${COMMERCE_OUTBOX_ENABLED:false}
-    interval-ms: ${COMMERCE_OUTBOX_INTERVAL_MS:5000}
-
-# 仅历史未决通知审核并迁入pay后开启，正式资金事实走Outbox。
+# 提交后的异步通知由到期任务扫描补偿。
 lemnt:
   trade:
     pay-notify:
-      enabled: ${PAY_LEGACY_NOTIFY_ENABLED:false}
+      enabled: ${PAY_NOTIFY_ENABLED:true}
+    payment-recovery:
+      enabled: ${PAYMENT_RECOVERY_ENABLED:true}

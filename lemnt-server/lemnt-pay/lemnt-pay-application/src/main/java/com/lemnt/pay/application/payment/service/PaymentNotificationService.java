@@ -1,11 +1,8 @@
 package com.lemnt.pay.application.payment.service;
 
-import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.pay.client.event.PaySuccessEvent;
-import com.lemnt.pay.domain.event.gateway.MessageOutboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.pay.domain.payment.model.PayNotifyType;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 
 import org.springframework.stereotype.Component;
@@ -16,14 +13,14 @@ import lombok.RequiredArgsConstructor;
 import java.util.Set;
 
 /**
- * 仅处理已验签的现金事实；支付和Outbox同事务，不写订单或权益。
+ * 仅处理已验签的现金事实；支付与通知任务同事务，不写订单或权益。
  */
 @Component
 @RequiredArgsConstructor
 public class PaymentNotificationService {
     private final OrderPaymentGateway orders;
     private final TradePaymentGateway payments;
-    private final MessageOutboxGateway outbox;
+    private final PayNotifyTaskService tasks;
 
     @Transactional(rollbackFor = Exception.class)
     public void execute(VerifiedPaymentNotification notice) {
@@ -59,18 +56,7 @@ public class PaymentNotificationService {
                 throw new IllegalStateException("支付状态已变化或渠道结果不允许完成");
             }
         }
-        outbox.enqueue(
-            CommerceEventTopics.PAY_SUCCESS,
-            payment.paymentNo(),
-            payment.orderNo(),
-            JsonUtils.toJsonStr(
-                new PaySuccessEvent(
-                    payment.paymentNo(),
-                    payment.orderNo(),
-                    order.memberId(),
-                    payment.channel(),
-                    payment.amount(),
-                    notice.channelTradeNo())));
+        tasks.enqueueForDelivery(PayNotifyType.PAY, payment.paymentNo(), payment.orderNo());
     }
 
     private boolean blank(String value) {

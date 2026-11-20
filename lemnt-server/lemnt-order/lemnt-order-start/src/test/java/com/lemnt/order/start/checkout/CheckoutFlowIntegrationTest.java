@@ -2318,7 +2318,8 @@ class CheckoutFlowIntegrationTest {
             tradeSource,
             "ALTER TABLE order_info ADD CONSTRAINT test_refund_failure CHECK(status <> 'REFUNDED')");
         var create = tradeComponents.get(PaymentRefundCreateCmdExe.class);
-        assertThrows(RuntimeException.class, () -> create.execute(afterSale.refundNo()));
+        var refund = create.execute(afterSale.refundNo());
+        assertEquals("SUCCESS", refund.status());
         assertEquals(
             "SUCCESS",
             tradeComponents
@@ -2327,12 +2328,17 @@ class CheckoutFlowIntegrationTest {
                 .status());
         assertEquals("REFUNDING", refundRequestGateway.afterSale(afterSale.refundNo()).status());
         assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
+        var payJdbc = tradeComponents.jdbc("pay");
+        String taskStatus = "SELECT status FROM pay_notify_task WHERE type='REFUND' AND biz_no=?";
+        assertEquals("FAILED", payJdbc.queryForObject(taskStatus, String.class, refund.refundNo()));
         sql(tradeSource, "ALTER TABLE order_info DROP CONSTRAINT test_refund_failure");
-        Mockito.when(refundClient.refundQuery(
-                ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-            .thenAnswer(call -> refundSuccess(call.getArgument(0)));
-        assertEquals("SUCCESS", create.execute(afterSale.refundNo()).status());
+        payJdbc.update(
+                "UPDATE pay_notify_task SET next_notify_time=TIMESTAMPADD(SECOND,-1,CURRENT_TIMESTAMP) WHERE type='REFUND' AND biz_no=?",
+                refund.refundNo());
         events.drainOrThrow();
+        assertEquals(
+                "SUCCESS", payJdbc.queryForObject(taskStatus, String.class, refund.refundNo()));
+        assertEquals("SUCCESS", create.execute(afterSale.refundNo()).status());
         assertEquals("REFUNDED", refundRequestGateway.afterSale(afterSale.refundNo()).status());
         assertEquals("REFUNDED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
         assertEquals(
@@ -3119,7 +3125,7 @@ class CheckoutFlowIntegrationTest {
     }
 
     /**
-     * 订单日志失败回滚订单本地事务，真实支付与原资金事件保留，重试仅记一次日志。
+     * 订单日志失败回滚订单本地事务，资金结果保留，通知重试仅记一次日志。
      */
     @Test
     void paymentLogFailureRollsBackStateAndRetryProducesSinglePaymentLog() throws Exception {
@@ -3136,14 +3142,23 @@ class CheckoutFlowIntegrationTest {
                 "LOG-PAY",
                 order.totalAmount(),
                 "NOTICE-LOG");
-        assertThrows(RuntimeException.class, () -> notify.execute(notification));
+        notify.execute(notification);
         assertEquals(
             "PENDING_PAYMENT", orderPersistenceService.findByOrderNo(order.orderNo()).status());
         assertEquals("SUCCESS", payments.findByPaymentNo(payment.paymentNo()).status());
+        var payJdbc = tradeComponents.jdbc("pay");
+        String taskStatus = "SELECT status FROM pay_notify_task WHERE type='PAY' AND biz_no=?";
+        assertEquals(
+                "FAILED", payJdbc.queryForObject(taskStatus, String.class, payment.paymentNo()));
         sql(tradeSource, "ALTER TABLE order_log DROP CONSTRAINT reject_payment_log");
+        payJdbc.update(
+                "UPDATE pay_notify_task SET next_notify_time=TIMESTAMPADD(SECOND,-1,CURRENT_TIMESTAMP) WHERE type='PAY' AND biz_no=?",
+                payment.paymentNo());
         events.drainOrThrow();
         notify.execute(notification);
         notify.execute(notification);
+        assertEquals(
+                "SUCCESS", payJdbc.queryForObject(taskStatus, String.class, payment.paymentNo()));
         var header = orderPersistenceService.findByOrderNo(order.orderNo());
         var logs = tradeComponents.get(OrderLogGateway.class).byOrderId(header.id());
         assertEquals(List.of(1, 10), logs.stream().map(OrderLog::operateType).toList());

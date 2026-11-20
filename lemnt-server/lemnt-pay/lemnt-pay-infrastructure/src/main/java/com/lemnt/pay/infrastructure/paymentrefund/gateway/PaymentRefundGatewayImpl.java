@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 支付退款表存储实现。
@@ -50,6 +51,18 @@ public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
     @Override
     public PaymentRefund find(String refundNo) {
         return PaymentRefundConverter.toModel(mapper.selectById(refundNo));
+    }
+
+    @Override
+    public List<PaymentRefund> waitingForQuery(String afterRefundNo, int limit) {
+        return mapper.selectList(
+            Wrappers.lambdaQuery(PaymentRefundDO.class)
+                .gt(PaymentRefundDO::getRefundNo, afterRefundNo)
+                .eq(PaymentRefundDO::getStatus, "WAITING")
+                .eq(PaymentRefundDO::getChannel, "WECHAT")
+                .orderByAsc(PaymentRefundDO::getRefundNo)
+                .last("LIMIT " + limit))
+            .stream().map(PaymentRefundConverter::toModel).toList();
     }
 
     @Override

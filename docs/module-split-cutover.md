@@ -29,7 +29,7 @@ product、promotion、order、pay、member 均按顺序导入 `lemnt-common.yaml
 
 ## 消息与副作用开关
 
-共享`commerce-mq.yaml`使用`ROCKETMQ_NAME_SERVER`；生产者组为`${spring.application.name}-commerce-producer-v1`。正式 5 个 Topic 为 PAY_SUCCESS、PAY_REFUND_SUCCESS、ORDER_PAID、AFTER_SALE_COMPLETED 和 ORDER_CLOSED。Topic与下列Consumer Group由生产常量/注解定义，不用新增一套不可生效的YAML映射替代。所有正式消费者最多重试16次，耗尽后由Broker死信保存；部署还须核对Broker重试/死信权限、告警与原信封重放。
+共享 `commerce-mq.yaml` 使用 `ROCKETMQ_NAME_SERVER`，生产者组为 `${spring.application.name}-commerce-producer-v1`。订单服务发送 `ORDER_PAID`、`AFTER_SALE_COMPLETED` 和 `ORDER_CLOSED`。订单服务也继续接收在途 `PAY_SUCCESS` 和 `PAY_REFUND_SUCCESS`。Topic 和消费者组由代码常量与注解定义。消费者最多重试 16 次，耗尽后由 Broker 保存死信。部署时核对 Broker 重试和死信权限、告警及原信封重放。
 
 | Topic | 消费服务 | Consumer Group |
 |---|---|---|
@@ -43,12 +43,14 @@ product、promotion、order、pay、member 均按顺序导入 `lemnt-common.yaml
 | ORDER_PAID | member | lemnt-member-paid-v1 |
 | ORDER_PAID | product | lemnt-product-paid-v1 |
 | ORDER_PAID | promotion | lemnt-promotion-order-paid-v1 |
-| PAY_REFUND_SUCCESS | order | lemnt-order-pay-refund-success-v1 |
-| PAY_SUCCESS | order | lemnt-order-pay-success-v1 |
+| PAY_REFUND_SUCCESS（在途兼容） | order | lemnt-order-pay-refund-success-v1 |
+| PAY_SUCCESS（在途兼容） | order | lemnt-order-pay-success-v1 |
 
-`COMMERCE_MQ_ENABLED`默认false，控制全部 12 个正式消费者；`COMMERCE_OUTBOX_ENABLED`默认false，控制order/pay两个Relay。配置缺失或显式false都不装配这些副作用组件。启用后按原Outbox记录发送，不重建事件编号或载荷。商品预占由商品库本地事务提交。新版订单中继只领取表中仍有正式消费者的订单消息，历史发货和订单完成记录留供审计。升级时同步停用旧的三条生产与消费链，已有 Broker 记录留供核对。
+`COMMERCE_MQ_ENABLED`默认false，控制全部 12 个正式消费者；`COMMERCE_OUTBOX_ENABLED`默认false，控制订单服务的 Relay。配置缺失或显式false都不装配这些副作用组件。启用后按原Outbox记录发送，不重建事件编号或载荷。商品预占由商品库本地事务提交。新版订单中继只领取表中仍有正式消费者的订单消息，历史发货和订单完成记录留供审计。升级时同步停用旧的三条生产与消费链，已有 Broker 记录留供核对。
 
-其他开关均默认关闭：`PROMOTION_SCHEDULER_ENABLED`、`ORDER_SCHEDULER_ENABLED`、`ORDER_AUTO_RECEIVE_ENABLED`、`ORDER_AUTO_COMMENT_ENABLED`、`ORDER_RECOVERY_ENABLED`、`PAY_LEGACY_NOTIFY_ENABLED`。既有`lemnt.mall.scheduler.*`与`lemnt.trade.*`配置键保持兼容，分别只在新的实际归属服务配置。order旧补偿Topic入口`lemnt.order.legacy-rollback.enabled`固定false；没有审核过历史未决任务时不得随意开启。
+支付与现金退款在资金事务中登记 `pay_notify_task`，提交后异步经内部 Dubbo 通知订单服务，收到订单提交结果才标为成功。通知调度由 `PAY_NOTIFY_ENABLED` 控制，默认开启。存量未完成出站记录按[迁移脚本](../lemnt-server/sql/upgrade/migrate_pay_outbox_to_notify_task.sql)核对和迁入，旧 Broker 在途消息由订单兼容消费者处理。
+
+其他开关均默认关闭：`PROMOTION_SCHEDULER_ENABLED`、`ORDER_SCHEDULER_ENABLED`、`ORDER_AUTO_RECEIVE_ENABLED`、`ORDER_AUTO_COMMENT_ENABLED`、`ORDER_RECOVERY_ENABLED`。既有`lemnt.mall.scheduler.*`与`lemnt.trade.*`配置键保持兼容，分别只在新的实际归属服务配置。order旧补偿Topic入口`lemnt.order.legacy-rollback.enabled`固定false；没有审核过历史未决任务时不得随意开启。
 
 ## 实际切流前的检查顺序（本批未执行）
 
@@ -57,7 +59,7 @@ product、promotion、order、pay、member 均按顺序导入 `lemnt-common.yaml
 3. 在独立目标库完成审核后的数据迁移，保留主键、业务号、快照与幂等凭证；按64表映射逐表计数并核对现金、数量、积分、券、库存。跨库外键由原业务号和可信Client核验替代，不能丢失关联。
 4. Redis沿用原提交恢复命名空间`mall:{settlement}:v2:`和新预览`mall:settlement:v5:`；保留原requestNo/orderNo/afterSaleNo、锁和30天恢复记录。旧未提交预览版本不变造为新报价，已提交请求必须能按原编号查询。不要清空共享Redis或按新服务名重写已有键。
 5. 历史PAY/REFUND/AFTER_SALE任务分别核验真实资金、订单冻结方案及权益回执，再登记明确的新归属。原支付应用标识（例如已存在的lemnt-mall appKey）是业务配置，不随部署名重命名。旧库存/券补偿消息逐条核对，不能同时重放为两套不同副作用。
-6. 准备Nacos源、独立账号、Dubbo服务、8个Topic和15个独立消费组。新服务先保持所有上述开关关闭，核对服务发现、数据源、实际调用方和回调地址；再按已审定顺序开启消费者、Relay、恢复与调度，最后开放新写入/切换网关。
+6. 准备 Nacos 源、独立账号、Dubbo 服务和上表中的 Topic 与消费组。验收部署期间显式关闭 `PAY_NOTIFY_ENABLED` 并保持其余开关关闭，核对服务发现、数据源和回调地址。发布支持新通知的订单服务后，再切换支付服务并开启通知调度。核对消费者、订单中继和恢复开关后开放新写入。
 7. 在真实环境验证普通/零现金订单、部分退款与尾差、重复/乱序、MQ中断恢复、支付验签、库存确认、积分/券和佣金。没有证据时仍标记待验收。
 
 ## 回滚边界

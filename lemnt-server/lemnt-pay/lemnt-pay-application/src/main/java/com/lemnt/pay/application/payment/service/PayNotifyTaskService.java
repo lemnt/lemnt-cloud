@@ -6,7 +6,11 @@ import com.lemnt.pay.domain.payment.model.PayNotifyTask;
 import com.lemnt.pay.domain.payment.model.PayNotifyTaskStatus;
 import com.lemnt.pay.domain.payment.model.PayNotifyType;
 
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +26,7 @@ public class PayNotifyTaskService {
 
     private final PayNotifyTaskGateway tasks;
     private final PayNotifyDispatcher dispatcher;
+    private final ApplicationEventPublisher publisher;
 
     /**
      * 幂等入队，同一 type+bizNo 返回既有任务。
@@ -49,12 +54,27 @@ public class PayNotifyTaskService {
                 null));
     }
 
-    /**
-     * 入队并立即尝试，返回值表示本次派发是否成功。
-     */
-    public boolean enqueueAndAttempt(String type, String bizNo, String orderNo) {
-        return attempt(enqueue(type, bizNo, orderNo).id());
+    /** 在资金事务中登记任务，提交后唤醒异步派发，到期扫描负责补偿。 */
+    public void enqueueForDelivery(PayNotifyType type, String bizNo, String orderNo) {
+        if (!TransactionSynchronizationManager.isActualTransactionActive()) {
+            throw new IllegalStateException("支付通知任务需要资金事务");
+        }
+        var task = enqueue(type.name(), bizNo, orderNo);
+        if (!orderNo.equals(task.orderNo())) {
+            throw new IllegalStateException("原支付通知任务的订单归属不一致");
+        }
+        if (PayNotifyTaskStatus.PENDING.name().equals(task.status())) {
+            publisher.publishEvent(new NotifyReady(task.id()));
+        }
     }
+
+    @Async
+    @TransactionalEventListener
+    public void deliverAfterCommit(NotifyReady event) {
+        attempt(event.taskId());
+    }
+
+    public record NotifyReady(Long taskId) {}
 
     /**
      * 抢占并派发一次；已成功返回 true，失败记录日志与下次时间后返回 false。

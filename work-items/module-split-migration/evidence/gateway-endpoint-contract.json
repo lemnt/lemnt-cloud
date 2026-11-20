@@ -1808,6 +1808,14 @@
     "sourceLine": 26
   },
   {
+    "method": "POST",
+    "path": "/trade/payment/notify/{appKey}/{channel}/refund",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/web/payment/PaymentNotifyController.java",
+    "sourceLine": 45
+  },
+  {
     "method": "GET",
     "path": "/trade/admin/payment-refunds",
     "owner": "pay",

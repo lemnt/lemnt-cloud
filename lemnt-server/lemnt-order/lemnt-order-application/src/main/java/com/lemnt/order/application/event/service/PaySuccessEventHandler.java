@@ -60,18 +60,34 @@ public class PaySuccessEventHandler {
                 || !Objects.equals(paid.get(0).channelTradeNo(), v.channelTradeNo())
                 || paid.get(0).amount().compareTo(v.amount()) != 0)
             throw new IllegalStateException("资金事实与原订单不一致，请先对账");
+        confirm(order, paid.get(0));
+    }
+
+    /** 以原支付事实处理可重试通知，已确认的同一笔资金幂等返回。 */
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    public void confirm(String orderNo, String paymentNo) {
+        var order = persistence.findByOrderNoForUpdate(orderNo);
+        var paid = successfulPayments(orderNo);
+        if (order == null || paid.size() != 1 || !paid.get(0).paymentNo().equals(paymentNo)) {
+            throw new IllegalStateException("原订单或唯一成功支付单不一致");
+        }
+        confirm(order, paid.get(0));
+    }
+
+    private void confirm(TradeOrder order, PaymentRecord payment) {
         if (Set.of("PAID", "SHIPPED", "COMPLETED", "REFUNDED").contains(order.status())) {
             var confirmed = orders.confirmedPaymentNo(order.orderNo());
-            if (Objects.equals(confirmed, v.paymentNo())
+            if (Objects.equals(confirmed, payment.paymentNo())
                     || (confirmed == null
-                            && inbox.has("order.pay_success.v1", "PAY_SUCCESS", v.paymentNo()))) {
+                            && inbox.has(
+                                    "order.pay_success.v1", "PAY_SUCCESS", payment.paymentNo()))) {
                 return;
             }
             throw new IllegalStateException("订单已支付但缺少一致的资金确认事实，请对账");
         }
         if (!"PENDING_PAYMENT".equals(order.status()))
             throw new IllegalStateException("真实资金到达时订单状态不允许支付，请对账处理");
-        markPaid(order, paid.get(0));
+        markPaid(order, payment);
     }
 
     /** 消息丢失时只依据支付服务的成功事实补记订单，未支付订单保持原状态。 */

@@ -2,8 +2,12 @@ package com.lemnt.order.start.support;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
 import com.lemnt.common.core.utils.JsonUtils;
+import com.lemnt.order.application.event.service.OutboxRelayService;
+import com.lemnt.order.domain.event.gateway.EventPublishGateway;
+import com.lemnt.pay.application.payment.service.PayNotifyTaskService;
 
-import java.lang.reflect.Proxy;
+import org.springframework.context.ApplicationEventPublisher;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -32,38 +36,20 @@ public final class CommerceEventPump {
         this.fixture = fixture;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public void install() throws Exception {
-        for (String owner : List.of("order", "pay")) {
-            Class<?> type =
-                Class.forName(
-                    "com.lemnt." + owner + ".domain.event.gateway.EventPublishGateway");
-            Object publisher =
-                Proxy.newProxyInstance(
-                    type.getClassLoader(),
-                    new Class<?>[]{type},
-                    (proxy, method, args) -> {
-                        if (method.getName().equals("publish")) {
-                            Object message = args[0];
-                            String json =
-                                (String)
-                                    message.getClass()
-                                        .getMethod("payload")
-                                        .invoke(message);
-                            var event = JsonUtils.toBean(json, CommerceEventEnvelope.class);
-                            synchronized (this) {
-                                var old = pending.get(event.eventNo());
-                                if (old == null) old = delivered.get(event.eventNo());
-                                if (old != null && !old.payload().equals(event.payload()))
-                                    throw new IllegalStateException("原事件载荷改变");
-                                pending.putIfAbsent(event.eventNo(), event);
-                            }
-                            return null;
-                        }
-                        return "测试Broker";
-                    });
-            fixture.register((Class) type, publisher);
-        }
+    public void install() {
+        fixture.register(ApplicationEventPublisher.class, event -> {});
+        fixture.register(
+                EventPublishGateway.class,
+                message -> {
+                    var event = JsonUtils.toBean(message.payload(), CommerceEventEnvelope.class);
+                    synchronized (this) {
+                        var old = pending.get(event.eventNo());
+                        if (old == null) old = delivered.get(event.eventNo());
+                        if (old != null && !old.payload().equals(event.payload()))
+                            throw new IllegalStateException("原事件载荷改变");
+                        pending.putIfAbsent(event.eventNo(), event);
+                    }
+                });
         fixture.after(
             (type, method) -> {
                 if (type.getName()
@@ -97,46 +83,39 @@ public final class CommerceEventPump {
      */
     public int drain() {
         return fixture.call(
-            () -> {
-                lastFailure = null;
-                var failed = new HashSet<String>();
-                int closed = 0;
-                for (int round = 0; round < 5; round++) {
-                    int sentBefore = delivered.size();
-                    for (String owner : List.of("pay", "order")) {
-                        fixture.jdbc(owner)
-                            .update(
-                                "UPDATE "
-                                    + owner
-                                    + "_message_outbox SET next_retry_at=TIMESTAMPADD(SECOND,-1,CURRENT_TIMESTAMP) WHERE status='PENDING'");
-                        fixture.invoke(
-                            "com.lemnt."
-                                + owner
-                                + ".application.event.service.OutboxRelayService",
-                            "relay");
-                    }
-                    List<CommerceEventEnvelope> batch;
-                    synchronized (this) {
-                        batch = new ArrayList<>(pending.values());
-                    }
-                    for (var event : batch) {
-                        if (failed.contains(event.eventNo())) continue;
-                        try {
-                            deliver(event);
-                            synchronized (this) {
-                                pending.remove(event.eventNo());
-                                delivered.put(event.eventNo(), event);
-                            }
-                            if ("ORDER_CLOSED".equals(event.eventType())) closed++;
-                        } catch (RuntimeException e) {
-                            failed.add(event.eventNo());
-                            lastFailure = e;
+                () -> {
+                    lastFailure = null;
+                    var failed = new HashSet<String>();
+                    int closed = 0;
+                    for (int round = 0; round < 5; round++) {
+                        int sentBefore = delivered.size();
+                        fixture.get(PayNotifyTaskService.class).processDue(50);
+                        fixture.jdbc("order")
+                                .update(
+                                        "UPDATE order_message_outbox SET next_retry_at=TIMESTAMPADD(SECOND,-1,CURRENT_TIMESTAMP) WHERE status='PENDING'");
+                        fixture.get(OutboxRelayService.class).relay();
+                        List<CommerceEventEnvelope> batch;
+                        synchronized (this) {
+                            batch = new ArrayList<>(pending.values());
                         }
+                        for (var event : batch) {
+                            if (failed.contains(event.eventNo())) continue;
+                            try {
+                                deliver(event);
+                                synchronized (this) {
+                                    pending.remove(event.eventNo());
+                                    delivered.put(event.eventNo(), event);
+                                }
+                                if ("ORDER_CLOSED".equals(event.eventType())) closed++;
+                            } catch (RuntimeException e) {
+                                failed.add(event.eventNo());
+                                lastFailure = e;
+                            }
+                        }
+                        if (delivered.size() == sentBefore) break;
                     }
-                    if (delivered.size() == sentBefore) break;
-                }
-                return closed;
-            });
+                    return closed;
+                });
     }
 
     private void handler(String name, String method, CommerceEventEnvelope e) {

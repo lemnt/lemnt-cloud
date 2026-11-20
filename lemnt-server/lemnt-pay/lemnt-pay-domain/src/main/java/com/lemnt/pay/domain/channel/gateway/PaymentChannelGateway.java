@@ -15,6 +15,9 @@ public interface PaymentChannelGateway {
      */
     PaymentPrepay prepay(PaymentRecord payment, PayChannelConfig config, String payerOpenId);
 
+    /** 查询原支付单的渠道成功事实。 */
+    VerifiedPaymentNotification query(PaymentRecord payment);
+
     /**
      * 验签并转换渠道通知；验签失败不得返回已核验对象。
      */

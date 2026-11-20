@@ -1,6 +1,7 @@
 package com.lemnt.pay.infrastructure.paymentrefund.gateway;
 
 import com.lemnt.pay.domain.channel.model.PayChannelConfig;
+import com.lemnt.pay.domain.channel.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
@@ -25,10 +26,7 @@ public class PaymentRefundChannelGatewayImpl implements PaymentRefundChannelGate
     @Override
     public PaymentRefundResult refund(PaymentRefund refund, PaymentRecord payment) {
         AbstractChannelAdapter adapter = channels.getChannel(refund.channel());
-        PayChannelConfig config = configs.resolve(payment.appKey(), payment.channel());
-        if (config == null) {
-            throw new IllegalStateException("退款渠道配置未启用或不唯一");
-        }
+        PayChannelConfig config = config(payment.appKey(), payment.channel());
         var result = adapter.refundQuery(refund, payment, config);
         if (result != null) {
             return result;
@@ -44,5 +42,24 @@ public class PaymentRefundChannelGatewayImpl implements PaymentRefundChannelGate
                 refund.channelRefundNo());
         }
         return adapter.refund(refund, payment, config);
+    }
+
+    @Override
+    public PaymentRefundResult query(PaymentRefund refund, PaymentRecord payment) {
+        return channels.getChannel(refund.channel())
+            .refundQuery(refund, payment, config(payment.appKey(), payment.channel()));
+    }
+
+    @Override
+    public PaymentRefundResult verify(String appKey, String channel, PaymentChannelNotification notification) {
+        return channels.getChannel(channel).refundCallback(config(appKey, channel), notification);
+    }
+
+    private PayChannelConfig config(String appKey, String channel) {
+        var config = configs.resolve(appKey, channel);
+        if (config == null) {
+            throw new IllegalStateException("退款渠道配置未启用或不唯一");
+        }
+        return config;
     }
 }

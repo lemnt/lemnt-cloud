@@ -2,8 +2,8 @@
 
 支付、原路退款、钱包与充值独立存储；order拥有订单/售后状态。唯一初始化SQL为sql/lemnt_pay.sql，只用于空库。端口默认9170，通过PAY_PORT覆盖。配置由环境提供，不存储凭据。
 
-从lemnt-server/pom.xml使用-pl lemnt-pay/lemnt-pay-start -am构建。新事件必须经Outbox投递，旧AFTER_SALE任务须在切流前审核迁往order；不可直接启用双写消费者。
+使用 `mvn -f lemnt-server/pom.xml -pl lemnt-pay/lemnt-pay-start -am test` 构建和测试。
 
-P5-00配置源位于`docs/config/lemnt-pay.yaml`及共享`commerce-mq.yaml`。消费者由`COMMERCE_MQ_ENABLED=true`显式开启，默认关闭；Outbox
-Relay还需`COMMERCE_OUTBOX_ENABLED=true`
-。先完成旧写入方停用和原任务审核，再按[配置与切流准备](../../docs/module-split-cutover.md)启用；本批未发布配置或切流。
+支付成功和现金退款成功在资金事务中保存通知任务。提交后异步调用订单服务，订单事务完成后任务标记成功。失败时按原退避规则重试，到期扫描由 `PAY_NOTIFY_ENABLED` 控制，默认开启。支付配置位于 `docs/config/lemnt-pay.yaml`。
+
+存量切流使用[通知任务迁移脚本](../sql/upgrade/migrate_pay_outbox_to_notify_task.sql)。先上线兼容旧消息和新通知的订单服务，再暂停旧支付写入方、中继及通知调度，核对旧记录后切换支付服务。旧 `AFTER_SALE` 派发任务单独审核迁往订单服务。

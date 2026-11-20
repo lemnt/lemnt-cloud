@@ -19,6 +19,16 @@ public interface AbstractChannelAdapter {
      */
     String channel();
 
+    /** 查渠道支付成功结果，未支付或渠道无记录时返回空。 */
+    default VerifiedPaymentNotification paymentQuery(PaymentRecord payment, PayChannelConfig config) {
+        return null;
+    }
+
+    /** 验签并提取渠道退款结果。 */
+    default PaymentRefundResult refundCallback(PayChannelConfig config, PaymentChannelNotification notification) {
+        throw new UnsupportedOperationException("渠道不支持退款回调");
+    }
+
     /**
      * 发起支付，返回客户端调起支付所需参数。
      *

@@ -1,5 +1,6 @@
 package com.lemnt.pay.infrastructure.order.gateway;
 
+import com.lemnt.order.client.OrderPaymentResultClient;
 import com.lemnt.order.client.OrderSnapshotClient;
 import com.lemnt.order.client.dto.FrozenRefundDTO;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
@@ -17,6 +18,19 @@ import org.springframework.stereotype.Component;
 public class OrderPaymentGatewayImpl implements OrderPaymentGateway {
     @DubboReference(check = false, timeout = 5000, retries = 0)
     private OrderSnapshotClient client;
+
+    @DubboReference(check = false, timeout = 5000, retries = 0)
+    private OrderPaymentResultClient results;
+
+    @Override
+    public void notifyPaid(String orderNo, String paymentNo) {
+        results.paid(orderNo, paymentNo);
+    }
+
+    @Override
+    public void notifyRefunded(String orderNo, String afterSaleNo, String refundNo) {
+        results.refunded(orderNo, afterSaleNo, refundNo);
+    }
 
     @Override
     public OrderPaymentSnapshot preparePayment(String no) {

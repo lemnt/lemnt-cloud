@@ -50,4 +50,17 @@ public class PayRefundSuccessEventHandler {
             throw new IllegalStateException("现金退款事实不一致，请先对账");
         coordinator.cashSucceeded(fact);
     }
+
+    /** 通知只定位售后，按原冻结方案与已成功退款流水完成售后。 */
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    public void confirm(String orderNo, String afterSaleNo, String refundNo) {
+        var fact = refunds.findByAfterSaleNo(afterSaleNo);
+        if (fact == null
+                || !"SUCCESS".equals(fact.status())
+                || !Objects.equals(fact.refundNo(), refundNo)
+                || !Objects.equals(fact.orderNo(), orderNo)) {
+            throw new IllegalStateException("原退款流水与通知不一致");
+        }
+        coordinator.cashSucceeded(fact);
+    }
 }

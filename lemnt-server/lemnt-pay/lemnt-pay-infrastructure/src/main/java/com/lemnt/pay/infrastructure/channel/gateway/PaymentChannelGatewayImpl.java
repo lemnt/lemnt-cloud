@@ -7,6 +7,7 @@ import com.lemnt.pay.domain.payment.model.PaymentPrepay;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.pay.infrastructure.channel.factory.PaymentChannelFactory;
+import com.lemnt.pay.infrastructure.channel.support.PayChannelConfigResolver;
 
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PaymentChannelGatewayImpl implements PaymentChannelGateway {
     private final PaymentChannelFactory channels;
+    private final PayChannelConfigResolver configs;
+
+    @Override
+    public VerifiedPaymentNotification query(PaymentRecord payment) {
+        var config = configs.resolve(payment.appKey(), payment.channel());
+        if (config == null) {
+            throw new IllegalStateException("支付单所属渠道配置未启用或不唯一");
+        }
+        return channels.getChannel(payment.channel()).paymentQuery(payment, config);
+    }
 
     @Override
     public PaymentPrepay prepay(

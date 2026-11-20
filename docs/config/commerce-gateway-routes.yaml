@@ -338,6 +338,7 @@ spring:
                     _genkey_9: /trade/app/wallet/recharges
                     _genkey_10: /trade/app/wallet/transfers
                     _genkey_11: /trade/payment/notify/{appKey}/{channel}
+                    _genkey_12: /trade/payment/notify/{appKey}/{channel}/refund
             - id: commerce-pay-put
               uri: lb://lemnt-pay
               order: -8

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 售后先提交原计划，再在订单事务外请求现金退款；完成由资金事件核对驱动。
+ * 售后先提交原计划，再在订单事务外请求现金退款；成功由支付通知驱动。
  */
 @Component
 @RequiredArgsConstructor
@@ -44,8 +44,6 @@ public class PaymentRefundCreateCmdExe {
         if (value == null) throw new IllegalStateException("原成功退款记录缺失，请先对账");
         if ("REFUNDED".equals(af.status()) && !"SUCCESS".equals(value.status()))
             throw new IllegalStateException("原成功退款与售后状态不一致，请先对账");
-        // 网络重试时查询到真实成功结果，也走同一冻结方案核验及本地事务；MQ迟到仍然幂等。
-        if ("SUCCESS".equals(value.status())) coordinator.cashSucceeded(value);
         if ("FAILED".equals(value.status())) coordinator.cashFailed(value, operator);
         return new PaymentRefundDTO(
             value.refundNo(),

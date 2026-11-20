@@ -15,4 +15,8 @@ public interface OrderPaymentGateway {
     FrozenRefundPlan prepareRefund(String afterSaleNo, PaymentOperator operator);
 
     FrozenRefundPlan refundPlan(String afterSaleNo);
+
+    void notifyPaid(String orderNo, String paymentNo);
+
+    void notifyRefunded(String orderNo, String afterSaleNo, String refundNo);
 }

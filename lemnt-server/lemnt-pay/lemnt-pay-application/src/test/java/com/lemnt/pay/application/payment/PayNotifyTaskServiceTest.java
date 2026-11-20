@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 class PayNotifyTaskServiceTest {
     final PayNotifyTaskGateway tasks = mock(PayNotifyTaskGateway.class);
     final PayNotifyDispatcher dispatcher = mock(PayNotifyDispatcher.class);
-    final PayNotifyTaskService service = new PayNotifyTaskService(tasks, dispatcher);
+    final PayNotifyTaskService service = new PayNotifyTaskService(tasks, dispatcher, event -> {});
     final LocalDateTime now = LocalDateTime.of(2026, 1, 1, 0, 0);
 
     private PayNotifyTask task(long id, int times, String status) {

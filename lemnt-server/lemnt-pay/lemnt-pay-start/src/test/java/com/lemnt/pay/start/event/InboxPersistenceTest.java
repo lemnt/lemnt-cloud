@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * 消费端幂等必须与业务同事务，并识别同号不同冻结载荷。
  */
-class InboxPersistenceTest extends OutboxPersistenceTest {
+class InboxPersistenceTest extends PayDatabaseFixture {
     MessageInboxGateway inbox() {
         return proxy(
             new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),

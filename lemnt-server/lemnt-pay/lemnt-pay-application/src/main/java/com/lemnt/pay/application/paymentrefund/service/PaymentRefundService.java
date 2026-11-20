@@ -1,12 +1,10 @@
 package com.lemnt.pay.application.paymentrefund.service;
 
-import com.lemnt.common.client.event.CommerceEventTopics;
-import com.lemnt.common.core.utils.JsonUtils;
-import com.lemnt.pay.client.event.PayRefundSuccessEvent;
-import com.lemnt.pay.domain.event.gateway.MessageOutboxGateway;
+import com.lemnt.pay.application.payment.service.PayNotifyTaskService;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.FrozenRefundPlan;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.pay.domain.payment.model.PayNotifyType;
 import com.lemnt.pay.domain.payment.model.PaymentOperator;
 import com.lemnt.pay.domain.payment.model.PaymentRules;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
@@ -32,7 +30,7 @@ public class PaymentRefundService {
     private final OrderPaymentGateway orders;
     private final TradePaymentGateway payments;
     private final PaymentRefundGateway refunds;
-    private final MessageOutboxGateway outbox;
+    private final PayNotifyTaskService tasks;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public PaymentRefund prepare(String afterSaleNo) {
@@ -160,7 +158,7 @@ public class PaymentRefundService {
                 throw new IllegalStateException("重复退款通知的渠道单号不一致");
             return current;
         }
-        if ("FAILED".equals(current.status()) && "FAILED".equals(result.status())) return current;
+        if ("FAILED".equals(current.status()) && !"SUCCESS".equals(result.status())) return current;
         if (current.channelRefundNo() != null
             && result.channelRefundNo() != null
             && !current.channelRefundNo().equals(result.channelRefundNo()))
@@ -179,20 +177,7 @@ public class PaymentRefundService {
                     : result.channelRefundNo());
         if (!refunds.updateResult(updated)) throw new IllegalStateException("退款状态写入冲突");
         if ("SUCCESS".equals(updated.status())) {
-            outbox.enqueue(
-                CommerceEventTopics.PAY_REFUND_SUCCESS,
-                updated.refundNo(),
-                updated.orderNo(),
-                JsonUtils.toJsonStr(
-                    new PayRefundSuccessEvent(
-                        updated.refundNo(),
-                        updated.afterSaleNo(),
-                        updated.paymentNo(),
-                        updated.orderNo(),
-                        plan.memberId(),
-                        updated.channel(),
-                        updated.amount(),
-                        updated.channelRefundNo())));
+            tasks.enqueueForDelivery(PayNotifyType.REFUND, updated.refundNo(), updated.orderNo());
         }
         return updated;
     }

@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
  * 支付结果派发任务重试调度，逐条隔离失败，不在此实现渠道调用。
  */
 @Component
-@ConditionalOnProperty(name = "lemnt.trade.pay-notify.enabled", havingValue = "true")
+@ConditionalOnProperty(
+        name = "lemnt.trade.pay-notify.enabled",
+        havingValue = "true",
+        matchIfMissing = true)
 public class PayNotifyScheduler {
     private static final Logger LOG = LoggerFactory.getLogger(PayNotifyScheduler.class);
     private static final int BATCH = 50;

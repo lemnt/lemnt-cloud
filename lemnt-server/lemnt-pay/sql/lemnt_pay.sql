@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS pay_notify_task (
     execute_version BIGINT NOT NULL DEFAULT 0 COMMENT '单调执行版本，领取和人工重置均递增，完成时按版本CAS',
     lease_until DATETIME NULL COMMENT '当前执行租约到期时间，使用数据库时间，过期允许重新领取',
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
-    type VARCHAR(16) NOT NULL COMMENT '派发业务类型：PAY支付、REFUND历史退款、AFTER_SALE售后权益',
+    type VARCHAR(16) NOT NULL COMMENT '派发业务类型：PAY支付、REFUND现金退款、AFTER_SALE历史售后权益',
     biz_no VARCHAR(40) NOT NULL COMMENT '业务单号',
     order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
     status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT '派发状态：PENDING待派发、SUCCESS成功、FAILED失败待重试',
@@ -232,29 +232,6 @@ CREATE TABLE IF NOT EXISTS pay_payment_refund (
     CONSTRAINT chk_payment_refund_amount CHECK(amount>0),
     CONSTRAINT chk_payment_refund_status CHECK(status IN ('WAITING','SUCCESS','FAILED'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='售后原路支付退款交易';
-
-CREATE TABLE IF NOT EXISTS pay_message_outbox (
-    id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',
-    event_no VARCHAR(64) NOT NULL COMMENT '稳定事件编号，重投不变',
-    event_type VARCHAR(40) NOT NULL COMMENT '事件类型',
-    business_key VARCHAR(128) NOT NULL COMMENT '本事件的业务幂等键',
-    aggregate_no VARCHAR(64) NOT NULL COMMENT '所属订单或支付业务编号',
-    schema_version INT NOT NULL COMMENT '事件载荷版本',
-    payload LONGTEXT NOT NULL COMMENT '冻结事件JSON，不保存凭据或完整个人资料',
-    payload_hash CHAR(64) NOT NULL COMMENT '规范化载荷SHA256，识别同键不同内容',
-    status VARCHAR(16) NOT NULL DEFAULT 'PENDING' COMMENT 'PENDING/SENDING/SENT/FAILED',
-    attempts INT NOT NULL DEFAULT 0 COMMENT '已尝试次数',
-    execute_version BIGINT NOT NULL DEFAULT 0 COMMENT '执行版本，隔离过期工作线程',
-    next_retry_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '下次允许领取时间',
-    lease_until DATETIME DEFAULT NULL COMMENT '数据库时钟计算的执行租约',
-    last_error VARCHAR(500) DEFAULT NULL COMMENT '脱敏错误摘要',
-    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    PRIMARY KEY (id),
-    UNIQUE KEY uk_event_no (event_no),
-    UNIQUE KEY uk_event_business (event_type, business_key),
-    KEY idx_event_retry (status, next_retry_at, lease_until)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='本地事务消息待投递记录';
 
 CREATE TABLE IF NOT EXISTS pay_message_inbox (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键',

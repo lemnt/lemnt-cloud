@@ -3,10 +3,13 @@ package com.lemnt.pay.adapter.web.payment;
 import com.lemnt.common.core.domain.R;
 import com.lemnt.pay.application.payment.cmd.PaymentNotifyReceiveCmd;
 import com.lemnt.pay.application.payment.executor.PaymentNotifyReceiveCmdExe;
+import com.lemnt.pay.application.payment.service.PaymentRecoveryService;
+import com.lemnt.pay.domain.channel.model.PaymentChannelNotification;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +39,25 @@ public class PaymentNotifyController {
     private static final String WECHAT_SIGN_TYPE = "Wechatpay-Signature-Type";
 
     private final PaymentNotifyReceiveCmdExe receive;
+    private final PaymentRecoveryService recovery;
+
+    /** 微信退款回调完成验签和资金事务后返回渠道成功应答。 */
+    @PostMapping("/{appKey}/{channel}/refund")
+    @Operation(summary = "接收渠道退款通知")
+    public ResponseEntity<Void> refund(
+        @PathVariable String appKey,
+        @PathVariable String channel,
+        @RequestHeader HttpHeaders headers,
+        @RequestBody String body) {
+        recovery.receiveRefund(appKey, channel, new PaymentChannelNotification(
+            body,
+            header(headers, GENERIC_SIGNATURE, WECHAT_SIGNATURE),
+            header(headers, GENERIC_TIMESTAMP, WECHAT_TIMESTAMP),
+            header(headers, GENERIC_NONCE, WECHAT_NONCE),
+            header(headers, GENERIC_SERIAL, WECHAT_SERIAL),
+            header(headers, GENERIC_SIGN_TYPE, WECHAT_SIGN_TYPE)));
+        return ResponseEntity.noContent().build();
+    }
 
     @PostMapping("/{appKey}/{channel}")
     @Operation(summary = "接收渠道支付通知")

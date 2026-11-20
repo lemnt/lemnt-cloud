@@ -103,6 +103,32 @@ public class WechatChannelAdapter implements AbstractChannelAdapter {
                     notification.nonce(),
                     notification.signType(),
                     notification.body()));
+        return successful(client, transaction);
+    }
+
+    @Override
+    public VerifiedPaymentNotification paymentQuery(PaymentRecord payment, PayChannelConfig config) {
+        var client = client(config);
+        var result = client.queryPayment(payment.paymentNo());
+        if (result == null || !TRADE_STATE_SUCCESS.equals(result.tradeState())) {
+            return null;
+        }
+        require(payment.paymentNo().equals(result.outTradeNo()), "微信查单返回了其他支付单");
+        return successful(client, result);
+    }
+
+    @Override
+    public PaymentRefundResult refundCallback(PayChannelConfig config, PaymentChannelNotification notification) {
+        var result = client(config).parseRefundNotification(new WechatPayNotifyRequest(
+            notification.serialNumber(), notification.signature(), notification.timestamp(),
+            notification.nonce(), notification.signType(), notification.body()));
+        require(text(result.outTradeNo()) && text(result.outRefundNo()), "微信退款通知缺少原单号");
+        return new PaymentRefundResult(
+            result.outRefundNo(), result.outTradeNo(), channel(), result.refundAmount(),
+            refundStatus(result.status()), result.refundId());
+    }
+
+    private VerifiedPaymentNotification successful(WechatPayClient client, WechatTransaction transaction) {
         require(transaction != null, "微信支付通知缺少交易信息");
         require(
             TRADE_STATE_SUCCESS.equals(transaction.tradeState()),

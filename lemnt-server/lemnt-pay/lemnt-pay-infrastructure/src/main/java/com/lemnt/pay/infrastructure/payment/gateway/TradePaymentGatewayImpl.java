@@ -134,6 +134,19 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
         return tradePaymentMapper.markClosed(paymentNo) == 1;
     }
 
+    @Override
+    public List<PaymentRecord> waitingForQuery(long afterId, int limit) {
+        return tradePaymentMapper.selectList(
+            Wrappers.lambdaQuery(TradePaymentDO.class)
+                .gt(TradePaymentDO::getId, afterId)
+                .eq(TradePaymentDO::getStatus, "WAITING")
+                .eq(TradePaymentDO::getChannel, "WECHAT")
+                .isNotNull(TradePaymentDO::getAppKey)
+                .orderByAsc(TradePaymentDO::getId)
+                .last("LIMIT " + limit))
+            .stream().map(this::toRecord).toList();
+    }
+
     private PaymentRecord toRecord(TradePaymentDO row) {
         return row == null
             ? null

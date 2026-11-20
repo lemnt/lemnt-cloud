@@ -2,10 +2,12 @@ package com.lemnt.third.sdk.wechatpay;
 
 import com.wechat.pay.java.core.exception.ServiceException;
 import com.wechat.pay.java.service.refund.RefundService;
+import com.wechat.pay.java.service.refund.model.Amount;
 import com.wechat.pay.java.service.refund.model.AmountReq;
 import com.wechat.pay.java.service.refund.model.CreateRequest;
 import com.wechat.pay.java.service.refund.model.QueryByOutRefundNoRequest;
 import com.wechat.pay.java.service.refund.model.Refund;
+import com.wechat.pay.java.service.refund.model.RefundNotification;
 import com.wechat.pay.java.service.refund.model.Status;
 
 import java.util.Set;
@@ -24,11 +26,14 @@ final class WechatRefundSupport {
     private WechatRefundSupport() {
     }
 
-    static WechatRefundResult create(RefundService service, WechatRefundCommand command) {
+    static WechatRefundResult create(RefundService service, WechatRefundCommand command, String notifyUrl) {
         CreateRequest request = new CreateRequest();
         request.setOutTradeNo(command.outTradeNo());
         request.setOutRefundNo(command.outRefundNo());
         request.setReason(reason(command.reason()));
+        if (notifyUrl != null && !notifyUrl.isBlank()) {
+            request.setNotifyUrl(notifyUrl);
+        }
         AmountReq amount = new AmountReq();
         amount.setCurrency(WechatPrepaySupport.CURRENCY);
         amount.setRefund(WechatPrepaySupport.fenLong(command.refundAmount(), "退款金额"));
@@ -58,16 +63,26 @@ final class WechatRefundSupport {
         if (value == null) {
             throw new IllegalStateException("微信退款未返回结果");
         }
-        var amount = value.getAmount();
-        if (amount == null || amount.getRefund() == null || amount.getRefund() <= 0) {
-            throw new IllegalStateException("微信退款金额缺失");
+        return result(value.getOutRefundNo(), value.getRefundId(), value.getOutTradeNo(),
+            value.getAmount(), value.getStatus());
+    }
+
+    static WechatRefundResult notification(RefundNotification value) {
+        if (value == null || value.getRefundStatus() == null) {
+            throw new IllegalStateException("微信退款通知缺少状态");
         }
-        return new WechatRefundResult(
-            value.getOutRefundNo(),
-            value.getRefundId(),
-            value.getOutTradeNo(),
-            WechatPrepaySupport.yuan(amount.getRefund()),
-            status(value.getStatus()));
+        return result(value.getOutRefundNo(), value.getRefundId(), value.getOutTradeNo(),
+            value.getAmount(), value.getRefundStatus());
+    }
+
+    private static WechatRefundResult result(String outRefundNo, String refundId, String outTradeNo,
+            Amount amount, Status status) {
+        if (amount == null || amount.getRefund() == null || amount.getRefund() <= 0
+                || (amount.getCurrency() != null && !WechatPrepaySupport.CURRENCY.equals(amount.getCurrency()))) {
+            throw new IllegalStateException("微信退款金额或币种不合法");
+        }
+        return new WechatRefundResult(outRefundNo, refundId, outTradeNo,
+            WechatPrepaySupport.yuan(amount.getRefund()), status(status));
     }
 
     private static WechatRefundStatus status(Status status) {

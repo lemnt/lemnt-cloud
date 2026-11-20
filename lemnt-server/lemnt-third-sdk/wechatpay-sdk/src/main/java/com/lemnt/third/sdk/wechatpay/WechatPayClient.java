@@ -2,12 +2,15 @@ package com.lemnt.third.sdk.wechatpay;
 
 import com.lemnt.third.sdk.wechatpay.config.WechatPayConfig;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
+import com.wechat.pay.java.core.exception.ServiceException;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
 import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import com.wechat.pay.java.service.payments.nativepay.NativePayService;
+import com.wechat.pay.java.service.payments.nativepay.model.QueryOrderByOutTradeNoRequest;
 import com.wechat.pay.java.service.refund.RefundService;
+import com.wechat.pay.java.service.refund.model.RefundNotification;
 
 /**
  * 微信支付 APIv3 客户端：对外只接收业务入参，微信字段、金额换算、签名与验签细节封装在 SDK 内。
@@ -93,7 +96,28 @@ public class WechatPayClient {
         if (command == null) {
             throw new IllegalArgumentException("微信退款参数不能为空");
         }
-        return WechatRefundSupport.create(refundService, command);
+        return WechatRefundSupport.create(refundService, command, channelConfig.getRefundNotifyUrl());
+    }
+
+    /** 按原商户支付单号查单，渠道确认不存在时返回空。 */
+    public WechatTransaction queryPayment(String outTradeNo) {
+        WechatPrepaySupport.requireText(outTradeNo, 32, "商户支付单号");
+        var request = new QueryOrderByOutTradeNoRequest();
+        request.setMchid(mchId());
+        request.setOutTradeNo(outTradeNo);
+        try {
+            return WechatNotificationMapper.toTransaction(nativePayService.queryOrderByOutTradeNo(request));
+        } catch (ServiceException error) {
+            if ("ORDER_NOT_EXIST".equals(error.getErrorCode()) || "ORDERNOTEXIST".equals(error.getErrorCode())) {
+                return null;
+            }
+            throw error;
+        }
+    }
+
+    /** 验签并解密原路退款通知。 */
+    public WechatRefundResult parseRefundNotification(WechatPayNotifyRequest notify) {
+        return WechatRefundSupport.notification(notificationParser.parse(requestParam(notify), RefundNotification.class));
     }
 
     /**
@@ -117,10 +141,15 @@ public class WechatPayClient {
      * @return 交易信息
      */
     public WechatTransaction parseTransactionNotification(WechatPayNotifyRequest notify) {
+        return WechatNotificationMapper.toTransaction(
+            notificationParser.parse(requestParam(notify), Transaction.class));
+    }
+
+    private RequestParam requestParam(WechatPayNotifyRequest notify) {
         if (notify == null) {
             throw new IllegalArgumentException("微信支付通知不能为空");
         }
-        RequestParam requestParam =
+        return
             new RequestParam.Builder()
                 .serialNumber(notify.serialNumber())
                 .signature(notify.signature())
@@ -129,7 +158,5 @@ public class WechatPayClient {
                 .signType(notify.signType())
                 .body(notify.body())
                 .build();
-        return WechatNotificationMapper.toTransaction(
-            notificationParser.parse(requestParam, Transaction.class));
     }
 }

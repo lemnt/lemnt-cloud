@@ -6,6 +6,7 @@ import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundFilter;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundTotal;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 支付退款表存储接口。
@@ -25,6 +26,9 @@ public interface PaymentRefundGateway {
      * 按退款交易编号查询。
      */
     PaymentRefund find(String refundNo);
+
+    /** 按原退款单号逐批查找待确认的渠道退款。 */
+    List<PaymentRefund> waitingForQuery(String afterRefundNo, int limit);
 
     /**
      * 按售后单查询唯一的退款交易。

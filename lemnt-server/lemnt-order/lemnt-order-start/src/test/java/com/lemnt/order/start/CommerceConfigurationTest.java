@@ -72,12 +72,17 @@ class CommerceConfigurationTest {
             assertThat(resolver.getProperty("rocketmq.producer.group"))
                 .isEqualTo("lemnt-" + owner + "-commerce-producer-v1");
             assertThat(resolver.getProperty("commerce.mq.enabled", Boolean.class)).isFalse();
-            if ("product".equals(owner)) {
-                // 商品预占由商品库事务提交，无出站中继
-                assertThat(resolver.getProperty("commerce.outbox.enabled", Boolean.class)).isNull();
-            } else if (!"promotion".equals(owner)) {
+            if ("order".equals(owner)) {
                 assertThat(resolver.getProperty("commerce.outbox.enabled", Boolean.class))
                     .isFalse();
+            } else {
+                assertThat(resolver.getProperty("commerce.outbox.enabled", Boolean.class)).isNull();
+                if ("pay".equals(owner)) {
+                    assertThat(
+                                    resolver.getProperty(
+                                            "lemnt.trade.pay-notify.enabled", Boolean.class))
+                            .isTrue();
+                }
             }
             sources.addFirst(
                 new MapPropertySource("cutover", Map.of("COMMERCE_MQ_ENABLED", "true")));
