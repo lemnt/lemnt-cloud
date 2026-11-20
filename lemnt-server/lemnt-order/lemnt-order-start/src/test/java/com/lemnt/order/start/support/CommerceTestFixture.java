@@ -1,6 +1,7 @@
 package com.lemnt.order.start.support;
 
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
+import com.lemnt.pay.domain.payment.gateway.PayAppNotifyGateway;
 
 import com.baomidou.lock.LockTemplate;
 import com.baomidou.mybatisplus.annotation.DbType;
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.h2.jdbcx.JdbcDataSource;
+import org.mockito.Mockito;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.aop.AfterReturningAdvice;
 import org.springframework.aop.framework.ProxyFactory;
@@ -43,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 /**
- * 真实四套DDL、Mapper和事务；只替换RPC/MQ传输，调用线程隔离模拟远端独立事务。
+ * 真实四套DDL、Mapper和事务；替换外部传输，调用线程隔离模拟远端独立事务。
  */
 public final class CommerceTestFixture implements AutoCloseable {
     private record Store(JdbcDataSource source, Connection schema, SqlSessionTemplate session) {
@@ -88,6 +90,7 @@ public final class CommerceTestFixture implements AutoCloseable {
 
     public CommerceTestFixture() throws Exception {
         register(LockTemplate.class, MemberLockTestSupport.create());
+        register(PayAppNotifyGateway.class, Mockito.mock(PayAppNotifyGateway.class));
         for (String context : new String[]{"product", "promotion", "order", "pay"}) {
             var source = new JdbcDataSource();
             source.setURL(

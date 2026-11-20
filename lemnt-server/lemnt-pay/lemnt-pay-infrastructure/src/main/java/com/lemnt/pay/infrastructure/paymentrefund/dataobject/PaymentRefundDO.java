@@ -30,4 +30,7 @@ public class PaymentRefundDO extends BaseDO {
     private BigDecimal amount;
     private String status;
     private String channelRefundNo;
+
+    /** 退款创建时的应用回调地址。 */
+    private String notifyUrl;
 }

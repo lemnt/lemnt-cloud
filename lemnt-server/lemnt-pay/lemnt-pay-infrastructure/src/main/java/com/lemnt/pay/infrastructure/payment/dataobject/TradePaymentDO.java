@@ -29,6 +29,10 @@ public class TradePaymentDO extends BaseDO {
     private Long memberId;
     private String channel;
     private String appKey;
+
+    /** 支付创建时的应用回调地址。 */
+    private String notifyUrl;
+
     private String channelTradeNo;
     private BigDecimal amount;
     private BigDecimal channelFeeRate;

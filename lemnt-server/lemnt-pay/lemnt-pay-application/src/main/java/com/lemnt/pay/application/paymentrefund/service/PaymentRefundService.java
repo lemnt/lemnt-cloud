@@ -85,15 +85,16 @@ public class PaymentRefundService {
                     .compareTo(payment.amount())
                     > 0) throw new IllegalStateException("重试退款超过原支付可退额度");
                 var retry =
-                    new PaymentRefund(
-                        existing.refundNo(),
-                        existing.afterSaleNo(),
-                        existing.paymentNo(),
-                        existing.orderNo(),
-                        existing.channel(),
-                        existing.amount(),
-                        "WAITING",
-                        existing.channelRefundNo());
+                        new PaymentRefund(
+                                existing.refundNo(),
+                                existing.afterSaleNo(),
+                                existing.paymentNo(),
+                                existing.orderNo(),
+                                existing.channel(),
+                                existing.amount(),
+                                "WAITING",
+                                existing.channelRefundNo(),
+                                existing.notifyUrl());
                 if (!refunds.updateResult(retry)) throw new IllegalStateException("退款重试额度预留失败");
                 return retry;
             }
@@ -176,17 +177,18 @@ public class PaymentRefundService {
             && !current.channelRefundNo().equals(result.channelRefundNo()))
             throw new IllegalStateException("渠道退款编号与已受理记录不一致");
         var updated =
-            new PaymentRefund(
-                current.refundNo(),
-                current.afterSaleNo(),
-                current.paymentNo(),
-                current.orderNo(),
-                current.channel(),
-                current.amount(),
-                result.status(),
-                result.channelRefundNo() == null
-                    ? current.channelRefundNo()
-                    : result.channelRefundNo());
+                new PaymentRefund(
+                        current.refundNo(),
+                        current.afterSaleNo(),
+                        current.paymentNo(),
+                        current.orderNo(),
+                        current.channel(),
+                        current.amount(),
+                        result.status(),
+                        result.channelRefundNo() == null
+                                ? current.channelRefundNo()
+                                : result.channelRefundNo(),
+                        current.notifyUrl());
         if (!refunds.updateResult(updated)) throw new IllegalStateException("退款状态写入冲突");
         if ("SUCCESS".equals(updated.status())) {
             if (PaymentChannel.WALLET.name().equals(updated.channel())) {
@@ -199,6 +201,7 @@ public class PaymentRefundService {
             }
             tasks.enqueueForDelivery(PayNotifyType.REFUND, updated.refundNo(), updated.orderNo());
         }
+        tasks.enqueueAppRefund(updated);
         return updated;
     }
 

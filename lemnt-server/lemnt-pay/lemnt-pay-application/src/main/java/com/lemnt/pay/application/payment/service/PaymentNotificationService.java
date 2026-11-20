@@ -60,6 +60,7 @@ public class PaymentNotificationService {
             }
         }
         tasks.enqueueForDelivery(PayNotifyType.PAY, payment.paymentNo(), payment.orderNo());
+        tasks.enqueueAppPayment(payment);
     }
 
     private boolean blank(String value) {

@@ -15,16 +15,17 @@ public final class PaymentRefundConverter {
      */
     public static PaymentRefund toModel(PaymentRefundDO value) {
         return value == null
-            ? null
-            : new PaymentRefund(
-            value.getRefundNo(),
-            value.getAfterSaleNo(),
-            value.getPaymentNo(),
-            value.getOrderNo(),
-            value.getChannel(),
-            value.getAmount(),
-            value.getStatus(),
-            value.getChannelRefundNo());
+                ? null
+                : new PaymentRefund(
+                        value.getRefundNo(),
+                        value.getAfterSaleNo(),
+                        value.getPaymentNo(),
+                        value.getOrderNo(),
+                        value.getChannel(),
+                        value.getAmount(),
+                        value.getStatus(),
+                        value.getChannelRefundNo(),
+                        value.getNotifyUrl());
     }
 
     /**

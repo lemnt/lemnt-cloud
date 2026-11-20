@@ -14,14 +14,17 @@ import com.lemnt.pay.application.payment.service.PaymentRecoveryService;
 import com.lemnt.pay.application.payment.service.RechargeService;
 import com.lemnt.pay.application.payment.service.WalletService;
 import com.lemnt.pay.application.paymentrefund.service.PaymentRefundService;
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
+import com.lemnt.pay.domain.channel.model.PayApp;
 import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 import com.lemnt.pay.domain.channel.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.FrozenRefundPlan;
 import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
+import com.lemnt.pay.domain.payment.gateway.PayAppNotifyGateway;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.model.PaymentOperator;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
@@ -51,6 +54,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -71,6 +75,8 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
     PaymentRefundService refundService;
     PayNotifyTaskService tasks;
     PayChannelConfigResolver channelConfigs;
+    PayAppGateway apps;
+    PayAppNotifyGateway appNotify;
 
     @BeforeEach
     void cashSetup() {
@@ -80,23 +86,27 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
                 new OrderPaymentSnapshot(
                     "O1", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
         channelConfigs = mock(PayChannelConfigResolver.class);
+        apps = mock(PayAppGateway.class);
+        appNotify = mock(PayAppNotifyGateway.class);
         payments =
                 proxy(
                         new TradePaymentGatewayImpl(
                                 session.getMapper(TradePaymentMapper.class),
                                 session.getMapper(PaymentOrderMapper.class),
-                                channelConfigs),
+                                channelConfigs,
+                                apps),
                         TradePaymentGateway.class);
         refunds =
-            proxy(
-                new PaymentRefundGatewayImpl(session.getMapper(PaymentRefundMapper.class)),
-                PaymentRefundGateway.class);
+                proxy(
+                        new PaymentRefundGatewayImpl(
+                                session.getMapper(PaymentRefundMapper.class), payments, apps),
+                        PaymentRefundGateway.class);
         tasks =
                 new PayNotifyTaskService(
                         new PayNotifyTaskGatewayImpl(
                                 session.getMapper(PayNotifyTaskMapper.class),
                                 session.getMapper(PayNotifyLogMapper.class)),
-                        new PayNotifyDispatcher(payments, refunds, orders),
+                        new PayNotifyDispatcher(payments, refunds, orders, appNotify),
                         event -> {});
         notifications =
                 proxy(
@@ -203,6 +213,26 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
 
     @Test
     void asyncDispatchIsQueuedOnlyAfterTheMoneyTransactionCommits() {
+        String url = "https://business.example.test/pay";
+        when(apps.findByAppKey("app"))
+                .thenReturn(new PayApp(1L, "app", "商城", 0, null, url, null, null));
+        when(orders.findByOrderNo("O2"))
+                .thenReturn(
+                        new OrderPaymentSnapshot(
+                                "O2", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
+        payments.createWaiting("P2", "O2", 7L, "SANDBOX", "app", new BigDecimal("10.00"));
+        assertEquals(url, payments.findByPaymentNo("P2").notifyUrl());
+        when(apps.findByAppKey("app"))
+                .thenReturn(new PayApp(1L, "app", "商城", 0, null, null, null, null));
+        var notice =
+                new VerifiedPaymentNotification(
+                        "P2", "O2", "SANDBOX", "CH2", new BigDecimal("10.00"), "NOTICE2");
+        Map<String, String> payload =
+                Map.of("orderNo", "O2", "paymentNo", "P2", "status", "SUCCESS");
+        doThrow(new IllegalStateException("接收端未确认应用通知"))
+                .doNothing()
+                .when(appNotify)
+                .post(url, payload);
         var work = new ArrayDeque<Runnable>();
         try (var context = new AnnotationConfigApplicationContext()) {
             context.register(AsyncConfiguration.class);
@@ -214,7 +244,7 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
                                     new PayNotifyTaskGatewayImpl(
                                             session.getMapper(PayNotifyTaskMapper.class),
                                             session.getMapper(PayNotifyLogMapper.class)),
-                                    new PayNotifyDispatcher(payments, refunds, orders),
+                                    new PayNotifyDispatcher(payments, refunds, orders, appNotify),
                                     context));
             context.refresh();
             var service =
@@ -225,25 +255,97 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
                             mock(RechargeService.class));
             transaction.executeWithoutResult(
                     status -> {
-                        service.execute(notice("CH1"));
+                        service.execute(notice);
                         assertTrue(work.isEmpty());
                         status.setRollbackOnly();
                     });
             assertTrue(work.isEmpty());
-            assertEquals("WAITING", payments.findByPaymentNo("P1").status());
+            assertEquals("WAITING", payments.findByPaymentNo("P2").status());
+            assertEquals(
+                    0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_notify_task", Integer.class));
             transaction.executeWithoutResult(
                     status -> {
-                        service.execute(notice("CH1"));
+                        service.execute(notice);
                         assertTrue(work.isEmpty());
                     });
-            assertEquals(1, work.size());
-            verify(orders, never()).notifyPaid("O1", "P1");
+            assertEquals(2, work.size());
+            verify(orders, never()).notifyPaid("O2", "P2");
+            verifyNoInteractions(appNotify);
             work.remove().run();
-            verify(orders).notifyPaid("O1", "P1");
+            work.remove().run();
+            verify(orders).notifyPaid("O2", "P2");
             assertEquals(
                     "SUCCESS",
-                    jdbc.queryForObject("SELECT status FROM pay_notify_task", String.class));
+                    jdbc.queryForObject(
+                            "SELECT status FROM pay_notify_task WHERE type='PAY'", String.class));
+            Long appTask =
+                    jdbc.queryForObject(
+                            "SELECT id FROM pay_notify_task WHERE type='PAY_HTTP'", Long.class);
+            assertEquals(
+                    "FAILED",
+                    jdbc.queryForObject(
+                            "SELECT status FROM pay_notify_task WHERE id=?",
+                            String.class,
+                            appTask));
+            assertTrue(tasks.retry(appTask));
+            verify(appNotify, times(2)).post(url, payload);
+            verifyNoMoreInteractions(appNotify);
         }
+    }
+
+    @Test
+    void refundAppKeepsOriginalAddressAndDeliversEachTerminalResultOnce() {
+        notifications.execute(notice("CH1"));
+        plan("A1", "2.00", "REFUNDING");
+        String url = "https://business.example.test/refund";
+        when(apps.findByAppKey("app"))
+                .thenReturn(new PayApp(1L, "app", "商城", 0, null, null, url, null));
+        var refund = refundService.prepare("A1");
+        assertEquals(url, refunds.find(refund.refundNo()).notifyUrl());
+        when(apps.findByAppKey("app")).thenReturn(null);
+        var failed =
+                new PaymentRefundResult(
+                        refund.refundNo(),
+                        refund.paymentNo(),
+                        refund.channel(),
+                        refund.amount(),
+                        "FAILED",
+                        null);
+        refundService.complete(refund, failed);
+        refundService.complete(refund, failed);
+        assertEquals(
+                List.of("PAY", "REFUND_FAIL_HTTP"),
+                jdbc.queryForList("SELECT type FROM pay_notify_task ORDER BY id", String.class));
+        var retry = refundService.prepare("A1");
+        var success =
+                new PaymentRefundResult(
+                        retry.refundNo(),
+                        retry.paymentNo(),
+                        retry.channel(),
+                        retry.amount(),
+                        "SUCCESS",
+                        "REF-1");
+        refundService.complete(retry, success);
+        refundService.complete(retry, success);
+        assertEquals(4, tasks.processDue(10));
+        verify(orders).notifyRefunded("O1", "A1", refund.refundNo());
+        for (String status : List.of("FAILED", "SUCCESS")) {
+            verify(appNotify)
+                    .post(
+                            url,
+                            Map.of(
+                                    "orderNo",
+                                    "O1",
+                                    "paymentNo",
+                                    "P1",
+                                    "afterSaleNo",
+                                    "A1",
+                                    "refundNo",
+                                    refund.refundNo(),
+                                    "status",
+                                    status));
+        }
+        verifyNoMoreInteractions(appNotify);
     }
 
     /** 模拟回调丢失，查单和后来到达的回调共用同一支付任务。 */

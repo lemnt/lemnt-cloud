@@ -1,6 +1,7 @@
 package com.lemnt.pay.infrastructure.payment.gateway;
 
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
 import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.model.PaymentFilter;
@@ -37,6 +38,7 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
     private final TradePaymentMapper tradePaymentMapper;
     private final PaymentOrderMapper orderMapper;
     private final PayChannelConfigResolver channelConfigs;
+    private final PayAppGateway apps;
 
     @Override
     public PaymentRecord lockByPaymentNo(String paymentNo) {
@@ -151,6 +153,7 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
             }
         }
         boolean expiring = PaymentChannel.WECHAT.name().equals(channel) && appKey != null;
+        var app = appKey == null ? null : apps.findByAppKey(appKey);
         TradePaymentDO row =
                 new TradePaymentDO()
                         .setPaymentNo(paymentNo)
@@ -158,6 +161,7 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
                         .setMemberId(memberId)
                         .setChannel(channel)
                         .setAppKey(appKey)
+                        .setNotifyUrl(app == null ? null : app.orderNotifyUrl())
                         .setAmount(amount)
                         .setAttemptNo(previous == null ? 1 : previous.getAttemptNo() + 1)
                         .setExpiresAtEpochSecond(
@@ -314,6 +318,7 @@ public class TradePaymentGatewayImpl implements TradePaymentGateway {
                         row.getNotifyId(),
                         row.getChannelFeeRate(),
                         row.getChannelFeeAmount(),
-                        row.getExpiresAtEpochSecond());
+                        row.getExpiresAtEpochSecond(),
+                        row.getNotifyUrl());
     }
 }

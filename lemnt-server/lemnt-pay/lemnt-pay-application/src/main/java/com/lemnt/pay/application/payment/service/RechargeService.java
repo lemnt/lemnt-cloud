@@ -41,6 +41,7 @@ public class RechargeService {
     private final WalletService walletService;
     private final TradePaymentGateway payments;
     private final PaymentRefundGateway refunds;
+    private final PayNotifyTaskService tasks;
 
     /** 锁定本人待支付充值单，用套餐快照的实付金额创建唯一原支付单。 */
     @Transactional(rollbackFor = Exception.class)
@@ -85,6 +86,7 @@ public class RechargeService {
         if ("PENDING".equals(recharge.status()) && "SUCCESS".equals(master.status())) {
             credit(recharge, notice.channel());
         }
+        tasks.enqueueAppPayment(payment);
         return true;
     }
 
@@ -159,7 +161,8 @@ public class RechargeService {
                         result.status(),
                         result.channelRefundNo() == null
                                 ? current.channelRefundNo()
-                                : result.channelRefundNo());
+                                : result.channelRefundNo(),
+                        current.notifyUrl());
         if (!refunds.updateResult(updated)) throw new IllegalStateException("充值退款写入冲突");
         if (!"WAITING".equals(updated.status())) {
             walletService.unfreeze(recharge.memberId(), recharge.totalPrice());
@@ -180,6 +183,7 @@ public class RechargeService {
                 change(recharge, "PAID", recharge.channelCode(), recharge.paidTime(), null);
             }
         }
+        tasks.enqueueAppRefund(updated);
         return updated;
     }
 

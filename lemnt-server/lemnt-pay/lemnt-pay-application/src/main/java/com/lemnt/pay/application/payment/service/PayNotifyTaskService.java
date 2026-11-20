@@ -5,6 +5,8 @@ import com.lemnt.pay.domain.payment.model.PayNotifyLog;
 import com.lemnt.pay.domain.payment.model.PayNotifyTask;
 import com.lemnt.pay.domain.payment.model.PayNotifyTaskStatus;
 import com.lemnt.pay.domain.payment.model.PayNotifyType;
+import com.lemnt.pay.domain.payment.model.PaymentRecord;
+import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Async;
@@ -13,6 +15,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
 
 /**
  * 支付结果下游派发：持久化任务、立即尝试、失败按退避重试。
@@ -32,9 +36,7 @@ public class PayNotifyTaskService {
      * 幂等入队，同一 type+bizNo 返回既有任务。
      */
     public PayNotifyTask enqueue(String type, String bizNo, String orderNo) {
-        if (!PayNotifyType.PAY.name().equals(type)
-            && !PayNotifyType.REFUND.name().equals(type)
-            && !PayNotifyType.AFTER_SALE.name().equals(type)) {
+        if (Arrays.stream(PayNotifyType.values()).noneMatch(value -> value.name().equals(type))) {
             throw new IllegalArgumentException("派发类型不合法");
         }
         require(bizNo, 40, "业务单号");
@@ -65,6 +67,23 @@ public class PayNotifyTaskService {
         }
         if (PayNotifyTaskStatus.PENDING.name().equals(task.status())) {
             publisher.publishEvent(new NotifyReady(task.id()));
+        }
+    }
+
+    /** 原支付快照设置地址时，独立登记应用支付成功通知。 */
+    public void enqueueAppPayment(PaymentRecord payment) {
+        if (payment.notifyUrl() != null) {
+            enqueueForDelivery(PayNotifyType.PAY_HTTP, payment.paymentNo(), payment.orderNo());
+        }
+    }
+
+    /** 退款成功和渠道明确失败分别去重，同编号后续重试成功仍可通知。 */
+    public void enqueueAppRefund(PaymentRefund refund) {
+        if (refund.notifyUrl() == null) return;
+        if ("SUCCESS".equals(refund.status())) {
+            enqueueForDelivery(PayNotifyType.REFUND_HTTP, refund.refundNo(), refund.orderNo());
+        } else if ("FAILED".equals(refund.status())) {
+            enqueueForDelivery(PayNotifyType.REFUND_FAIL_HTTP, refund.refundNo(), refund.orderNo());
         }
     }
 

@@ -1,6 +1,7 @@
 package com.lemnt.pay.application.payment;
 
 import com.lemnt.common.core.exception.ServiceException;
+import com.lemnt.pay.application.payment.service.PayNotifyTaskService;
 import com.lemnt.pay.application.payment.service.RechargeService;
 import com.lemnt.pay.application.payment.service.WalletService;
 import com.lemnt.pay.domain.payment.gateway.RechargePackageGateway;
@@ -35,7 +36,8 @@ class RechargeServiceTest {
                     recharges,
                     walletService,
                     mock(TradePaymentGateway.class),
-                    mock(PaymentRefundGateway.class));
+                    mock(PaymentRefundGateway.class),
+                    mock(PayNotifyTaskService.class));
     final LocalDateTime now = LocalDateTime.of(2026, 1, 1, 0, 0);
 
     private RechargePackage pkg(int status) {

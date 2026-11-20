@@ -1,6 +1,7 @@
 import { request } from '@/api/request';
 
-export type PayNotifyType = 'PAY' | 'REFUND' | 'AFTER_SALE';
+export type PayNotifyType =
+  'PAY' | 'REFUND' | 'AFTER_SALE' | 'PAY_HTTP' | 'REFUND_HTTP' | 'REFUND_FAIL_HTTP';
 export type PayNotifyStatus = 'PENDING' | 'SUCCESS' | 'FAILED';
 
 export interface PayNotifyTask {
@@ -60,8 +61,18 @@ function count(v: unknown): number {
   if (typeof v !== 'number' || !Number.isSafeInteger(v) || v < 0) throw Error('尝试次数不合法');
   return v;
 }
+export function isPayNotifyType(v: unknown): v is PayNotifyType {
+  return (
+    v === 'PAY' ||
+    v === 'REFUND' ||
+    v === 'AFTER_SALE' ||
+    v === 'PAY_HTTP' ||
+    v === 'REFUND_HTTP' ||
+    v === 'REFUND_FAIL_HTTP'
+  );
+}
 function taskType(v: unknown): PayNotifyType {
-  if (v !== 'PAY' && v !== 'REFUND' && v !== 'AFTER_SALE') throw Error('派发类型不合法');
+  if (!isPayNotifyType(v)) throw Error('派发类型不合法');
   return v;
 }
 function taskStatus(v: unknown): PayNotifyStatus {

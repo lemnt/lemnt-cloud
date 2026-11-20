@@ -1,6 +1,8 @@
 package com.lemnt.pay.infrastructure.paymentrefund.gateway;
 
 import com.lemnt.common.domain.model.PageResult;
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
+import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundFilter;
@@ -25,6 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
     private final PaymentRefundMapper mapper;
+    private final TradePaymentGateway payments;
+    private final PayAppGateway apps;
 
     @Override
     public PaymentRefundTotal total(String orderNo) {
@@ -75,7 +79,14 @@ public class PaymentRefundGatewayImpl implements PaymentRefundGateway {
 
     @Override
     public void save(PaymentRefund refund) {
-        mapper.insert(PaymentRefundConverter.toDO(refund));
+        var payment = payments.findByPaymentNo(refund.paymentNo());
+        var app =
+                payment == null || payment.appKey() == null
+                        ? null
+                        : apps.findByAppKey(payment.appKey());
+        var row = PaymentRefundConverter.toDO(refund);
+        row.setNotifyUrl(app == null ? null : app.refundNotifyUrl());
+        mapper.insert(row);
     }
 
     @Override

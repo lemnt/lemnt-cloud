@@ -1,10 +1,12 @@
 package com.lemnt.pay.start.payment;
 
+import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
 import com.lemnt.pay.infrastructure.channel.support.PayChannelConfigResolver;
 
 import com.baomidou.lock.LockTemplate;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Fallback;
 
 import static org.mockito.Mockito.mock;
 
@@ -14,6 +16,12 @@ class PaymentPersistenceDependencies {
     @Bean
     PayChannelConfigResolver channelConfigs() {
         return mock(PayChannelConfigResolver.class);
+    }
+
+    @Bean
+    @Fallback
+    PayAppGateway payApps() {
+        return mock(PayAppGateway.class);
     }
 
     @Bean

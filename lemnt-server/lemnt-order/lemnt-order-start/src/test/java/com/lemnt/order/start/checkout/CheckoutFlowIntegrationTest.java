@@ -3137,6 +3137,11 @@ class CheckoutFlowIntegrationTest {
     void wechatRechargeAndOriginalRefundCommitWalletExactlyOnce() {
         var jdbc = tradeComponents.jdbc("pay");
         jdbc.update(
+                """
+                INSERT INTO pay_app (app_key,name,status,order_notify_url,refund_notify_url)
+                VALUES ('app','钱包充值',0,'https://business.example.test/pay','https://business.example.test/refund')
+                """);
+        jdbc.update(
                 "INSERT INTO pay_recharge_package (id,name,pay_price,bonus_price) VALUES (900,'充值测试',10,2)");
         var recharge = tradeComponents.get(RechargeService.class);
         var wallet = tradeComponents.get(WalletService.class);
@@ -3198,7 +3203,9 @@ class CheckoutFlowIntegrationTest {
         assertEquals(
                 2,
                 jdbc.queryForObject("SELECT COUNT(*) FROM pay_wallet_transaction", Integer.class));
-        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_notify_task", Integer.class));
+        assertEquals(
+                List.of("PAY_HTTP", "REFUND_HTTP"),
+                jdbc.queryForList("SELECT type FROM pay_notify_task ORDER BY id", String.class));
     }
 
     /** 失败终态释放余额，重复失败回调不重复解冻。 */

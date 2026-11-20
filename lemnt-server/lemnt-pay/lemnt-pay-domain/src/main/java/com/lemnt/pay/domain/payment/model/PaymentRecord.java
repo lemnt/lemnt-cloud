@@ -17,7 +17,8 @@ public record PaymentRecord(
         String notifyId,
         BigDecimal channelFeeRate,
         BigDecimal channelFeeAmount,
-        Long expiresAtEpochSecond) {
+        Long expiresAtEpochSecond,
+        String notifyUrl) {
     /** 兼容没有手续费及有效期快照的支付记录。 */
     public PaymentRecord(
             Long id,
@@ -39,6 +40,7 @@ public record PaymentRecord(
                 amount,
                 status,
                 notifyId,
+                null,
                 null,
                 null,
                 null);

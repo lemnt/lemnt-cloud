@@ -5,6 +5,7 @@ import com.lemnt.pay.domain.channel.model.PaymentChannel;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
@@ -57,8 +58,21 @@ public final class PayConfigRules {
 
     public static String url(String value, String field) {
         String text = optional(value, 255, field);
-        if (text != null && !(text.startsWith("https://") || text.startsWith("http://"))) {
-            throw new IllegalArgumentException(field + "须为http或https地址");
+        if (text == null) return null;
+        URI uri;
+        try {
+            uri = URI.create(text);
+        } catch (IllegalArgumentException error) {
+            throw new IllegalArgumentException(field + "须为有效的 HTTP(S) 地址");
+        }
+        if ((!"https".equalsIgnoreCase(uri.getScheme())
+                        && !"http".equalsIgnoreCase(uri.getScheme()))
+                || uri.getHost() == null
+                || uri.getRawUserInfo() != null
+                || uri.getRawFragment() != null
+                || uri.getPort() == 0
+                || uri.getPort() > 65535) {
+            throw new IllegalArgumentException(field + "须为有效的 HTTP(S) 地址");
         }
         return text;
     }

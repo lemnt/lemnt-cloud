@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS pay_payment (
     order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
     member_id BIGINT NULL COMMENT '会员编号，创建支付单时来自订单可信快照写入，用于资金归属核对与审计',
     channel VARCHAR(32) NOT NULL COMMENT '支付渠道编码',
+    notify_url VARCHAR(255) NULL COMMENT '下单时的应用支付通知地址',
     app_key VARCHAR(64) NULL COMMENT '支付应用标识',
     channel_trade_no VARCHAR(128) NULL COMMENT '渠道支付流水号',
     amount DECIMAL(19,2) NOT NULL COMMENT '业务金额，单位元',
@@ -68,7 +69,7 @@ CREATE TABLE IF NOT EXISTS pay_notify_task (
     execute_version BIGINT NOT NULL DEFAULT 0 COMMENT '单调执行版本，领取和人工重置均递增，完成时按版本CAS',
     lease_until DATETIME NULL COMMENT '当前执行租约到期时间，使用数据库时间，过期允许重新领取',
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
-    type VARCHAR(16) NOT NULL COMMENT '派发业务类型：PAY支付、REFUND现金退款、AFTER_SALE历史售后权益',
+    type VARCHAR(16) NOT NULL COMMENT '派发业务类型：内部交易通知、应用HTTP通知或历史售后权益',
     biz_no VARCHAR(40) NOT NULL COMMENT '业务单号',
     order_no VARCHAR(40) NOT NULL COMMENT '交易订单业务单号',
     status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT '派发状态：PENDING待派发、SUCCESS成功、FAILED失败待重试',
@@ -233,6 +234,7 @@ CREATE TABLE IF NOT EXISTS pay_wallet_transfer (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员钱包转账';
 
 CREATE TABLE IF NOT EXISTS pay_payment_refund (
+    notify_url VARCHAR(255) NULL COMMENT '创建时的应用退款通知地址',
     refund_no VARCHAR(40) NOT NULL PRIMARY KEY COMMENT '退款业务单号',
     after_sale_no VARCHAR(40) NOT NULL COMMENT '售后业务单号',
     payment_no VARCHAR(40) NULL COMMENT '支付业务单号',

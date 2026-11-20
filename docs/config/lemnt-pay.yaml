@@ -38,3 +38,8 @@ lemnt:
       enabled: ${PAY_NOTIFY_ENABLED:true}
     payment-recovery:
       enabled: ${PAYMENT_RECOVERY_ENABLED:true}
+
+payment:
+  app-notify:
+    # 已授权的接收端 Origin，多个以逗号分隔。
+    allowed-origins: ${PAY_APP_NOTIFY_ALLOWED_ORIGINS:}

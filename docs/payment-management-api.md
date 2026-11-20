@@ -86,6 +86,14 @@
 
 第一次确认支付成功时，保存渠道费率和按费率计算的手续费。计算单位为元，四舍五入到分。钱包支付费率与手续费为零。历史交易或费率未知的交易留空。后台支付详情可查看这两个字段。
 
+### 支付应用结果通知
+
+- 在「支付渠道配置」编辑应用的支付结果回调地址和退款结果回调地址。支付尝试和原路退款在创建时分别保存对应地址。地址留空时跳过该类应用通知。修改设置只影响新建记录。
+- 在 Nacos 的 `lemnt-pay.yaml` 配置 `payment.app-notify.allowed-origins`，也可使用配置模板中的环境变量 `PAY_APP_NOTIFY_ALLOWED_ORIGINS`。按协议、主机与端口匹配授权接收端，多个地址以逗号分隔。接收端重定向按失败处理。 [Nacos 配置模板](config/lemnt-pay.yaml)
+- 应用回调使用 JSON POST。支付成功发送 `orderNo`、`paymentNo`、`status`。退款成功或渠道明确失败另外包含 `afterSaleNo` 和 `refundNo`，充值退款的 `afterSaleNo` 为原充值单号。状态为 `SUCCESS` 或 `FAILED`，接收端完成处理后返回 HTTP 2xx 与 JSON `{"code":200}`。
+- 结果和通知任务在同一资金事务提交。任务提交后异步投递，失败沿用到期重试和后台「支付通知任务」人工重发。接收端按支付单号或退款单号加结果状态去重，并以查询得到的最新资金状态处理迟到结果。商城订单通知仍走内部链路，独立于应用 HTTP 通知。
+- 已有支付库先执行 [应用通知字段升级](../lemnt-server/sql/upgrade/migrate_pay_app_notify.sql)。历史记录的回调地址保留空值。
+
 ## 表与部署
 
 支付库初始化使用 [lemnt_pay.sql](../lemnt-server/lemnt-pay/sql/lemnt_pay.sql)。微信公钥和回调地址保存在原渠道 JSON，补查复用 `pay_payment` 和 `pay_payment_refund`。存量支付库如仍有待发送的 Outbox 记录，按 [切流说明](module-split-cutover.md) 迁入通知任务。

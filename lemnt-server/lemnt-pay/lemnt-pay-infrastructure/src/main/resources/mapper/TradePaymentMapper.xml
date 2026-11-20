@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lemnt.pay.infrastructure.payment.mapper.TradePaymentMapper">
     <insert id="createWaiting">
-        INSERT INTO pay_payment(payment_no,order_no,member_id,channel,app_key,amount,status,attempt_no,expires_at_epoch_second)
-        VALUES(#{paymentNo},#{orderNo},#{memberId},#{channel},#{appKey},#{amount},'WAITING',#{attemptNo},#{expiresAtEpochSecond})
+        INSERT INTO pay_payment(payment_no,order_no,member_id,channel,app_key,amount,status,attempt_no,expires_at_epoch_second,notify_url)
+        VALUES(#{paymentNo},#{orderNo},#{memberId},#{channel},#{appKey},#{amount},'WAITING',#{attemptNo},#{expiresAtEpochSecond},#{notifyUrl})
         ON DUPLICATE KEY UPDATE payment_no=payment_no
     </insert>
     <select id="findByPaymentNo" resultType="com.lemnt.pay.infrastructure.payment.dataobject.TradePaymentDO">

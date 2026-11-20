@@ -25,7 +25,7 @@ public class PayNotifyTaskDO extends BaseDO {
     private Long id;
 
     /**
-     * 类型：PAY/REFUND/AFTER_SALE。
+     * 类型：内部交易通知、应用 HTTP 通知或历史售后权益。
      */
     private String type;
 
