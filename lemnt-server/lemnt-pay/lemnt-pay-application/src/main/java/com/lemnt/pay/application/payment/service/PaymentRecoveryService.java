@@ -27,8 +27,10 @@ public class PaymentRecoveryService {
     private final PaymentRefundChannelGateway refundChannels;
     private final PaymentNotificationService paymentResults;
     private final PaymentRefundService refundResults;
+    private final PaymentAttemptService attempts;
 
     private long paymentCursor;
+    private long expiryCursor;
     private String refundCursor = "";
 
     /** 每轮最多查一批，失败项在下次遍历时重试。 */
@@ -44,6 +46,22 @@ public class PaymentRecoveryService {
             paymentCursor = payment.id();
         }
         if (batch.size() < BATCH) paymentCursor = 0;
+    }
+
+    /** 到期先查成功事实，查单异常保留待确认，渠道确认关单后才结束尝试。 */
+    public void expirePayments() {
+        var batch = payments.expiredWaiting(expiryCursor, BATCH);
+        for (var payment : batch) {
+            try {
+                var result = paymentChannels.query(payment);
+                if (result != null) paymentResults.execute(result);
+                else attempts.closeExpired(payment.paymentNo());
+            } catch (RuntimeException error) {
+                log.warn("到期支付尝试核对失败，支付单 {}", payment.paymentNo(), error);
+            }
+            expiryCursor = payment.id();
+        }
+        if (batch.size() < BATCH) expiryCursor = 0;
     }
 
     /** 查询原退款单，查询不可见时保留原状态。 */

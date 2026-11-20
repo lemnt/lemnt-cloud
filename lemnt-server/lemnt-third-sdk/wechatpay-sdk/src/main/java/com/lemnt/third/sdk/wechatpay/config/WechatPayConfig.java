@@ -27,6 +27,13 @@ public class WechatPayConfig {
      * 商户 API 私钥（apiclient_key.pem 的完整内容），用于请求签名。
      */
     private String privateKey;
+
+    /** 微信支付商户平台下载的微信支付公钥 PEM 内容。 */
+    private String publicKey;
+
+    /** 微信支付公钥 ID，对应微信通知的 Wechatpay-Serial 请求头。 */
+    private String publicKeyId;
+
     private String payNotifyUrl;
     private String refundNotifyUrl;
 
@@ -38,6 +45,8 @@ public class WechatPayConfig {
         requireText(mchId, "mchId");
         requireText(serialNo, "serialNo");
         requireText(privateKey, "privateKey");
+        requireText(publicKey, "publicKey");
+        requireText(publicKeyId, "publicKeyId");
         requireText(apiV3key, "apiV3key");
         if (apiV3key.length() != API_V3_KEY_LENGTH) {
             throw new IllegalArgumentException("微信支付配置 apiV3key 长度必须为32位");

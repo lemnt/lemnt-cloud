@@ -37,7 +37,7 @@ public class WechatChannelAdapter implements AbstractChannelAdapter {
     private static final String TRADE_STATE_SUCCESS = "SUCCESS";
 
     /**
-     * 官方 SDK 创建客户端时会下载平台证书，按配置内容缓存，避免每次请求重建。
+     * 按渠道配置缓存客户端，公钥或商户签名配置变化时重建。
      */
     private final Map<String, WechatPayClient> clientCache = new ConcurrentHashMap<>();
 
@@ -79,13 +79,14 @@ public class WechatChannelAdapter implements AbstractChannelAdapter {
         WechatPayClient client = client(config);
         require(text(client.payNotifyUrl()), "微信支付配置缺少payNotifyUrl");
         var result =
-            client.prepay(
-                new WechatPrepayCommand(
-                    payment.paymentNo(),
-                    payment.orderNo(),
-                    payment.amount(),
-                    client.payNotifyUrl(),
-                    payerOpenId));
+                client.prepay(
+                        new WechatPrepayCommand(
+                                payment.paymentNo(),
+                                payment.orderNo(),
+                                payment.amount(),
+                                client.payNotifyUrl(),
+                                payerOpenId,
+                                payment.expiresAtEpochSecond()));
         return new PaymentPrepay(payment.paymentNo(), channel(), null, result.params());
     }
 

@@ -29,6 +29,10 @@ public class PaymentChannelFactory {
         this.channelMap = Collections.unmodifiableMap(map);
     }
 
+    public boolean supports(String channel) {
+        return channelMap.containsKey(channel);
+    }
+
     public AbstractChannelAdapter getChannel(String channelCode) {
         AbstractChannelAdapter adapter = channelMap.get(channelCode);
         if (adapter == null) {

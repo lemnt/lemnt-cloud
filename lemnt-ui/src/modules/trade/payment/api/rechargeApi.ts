@@ -1,6 +1,6 @@
 import { request } from '@/api/request';
 
-export type RechargeStatus = 'PENDING' | 'PAID' | 'REFUNDED';
+export type RechargeStatus = 'PENDING' | 'PAID' | 'REFUNDING' | 'REFUNDED';
 
 export interface RechargePackage {
   id: string;
@@ -76,7 +76,8 @@ function status(v: unknown): 0 | 1 {
   return v;
 }
 function rechargeStatus(v: unknown): RechargeStatus {
-  if (v !== 'PENDING' && v !== 'PAID' && v !== 'REFUNDED') throw Error('充值状态不合法');
+  if (v !== 'PENDING' && v !== 'PAID' && v !== 'REFUNDING' && v !== 'REFUNDED')
+    throw Error('充值状态不合法');
   return v;
 }
 function array(v: unknown): unknown[] {

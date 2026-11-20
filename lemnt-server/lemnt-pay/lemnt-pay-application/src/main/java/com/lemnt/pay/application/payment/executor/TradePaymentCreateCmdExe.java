@@ -1,14 +1,15 @@
 package com.lemnt.pay.application.payment.executor;
 
 import com.lemnt.common.core.utils.JsonUtils;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
-import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class TradePaymentCreateCmdExe {
     /**
      * 执行交易支付创建命令。
      */
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public PaymentRecord execute(String orderNo, String channel) {
         return execute(orderNo, channel, null);
     }
@@ -38,7 +39,7 @@ public class TradePaymentCreateCmdExe {
     /**
      * 小程序支付创建时绑定支付应用，回调按应用解析渠道密钥。
      */
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
     public PaymentRecord execute(String orderNo, String channel, String appKey) {
         if (orderNo == null || orderNo.isBlank() || channel == null || channel.isBlank()) {
             throw new IllegalArgumentException("订单号和支付渠道不能为空");
@@ -81,11 +82,11 @@ public class TradePaymentCreateCmdExe {
             throw new IllegalStateException("原订单状态或支付准备金额已变化");
         }
 
-        PaymentRecord existing =
-            tradePaymentGateway.findByOrderNoAndChannel(order.orderNo(), normalizedChannel);
-        if (existing != null) {
-            return existing;
+        if (tradePaymentGateway.findByOrderNo(order.orderNo()).stream()
+                .anyMatch(attempt -> conflicts(normalizedChannel, attempt))) {
+            throw new IllegalStateException("订单已有其他渠道支付，不能重复收款");
         }
+
         String paymentNo =
             "PAY"
                 + UUID.randomUUID()
@@ -95,5 +96,15 @@ public class TradePaymentCreateCmdExe {
                 .toUpperCase(Locale.ROOT);
         return tradePaymentGateway.createWaiting(
             paymentNo, order.orderNo(), order.memberId(), normalizedChannel, appKey, order.totalAmount());
+    }
+
+    private boolean conflicts(String channel, PaymentRecord attempt) {
+        String wallet = PaymentChannel.WALLET.name();
+        return !channel.equals(attempt.channel())
+                && (wallet.equals(channel)
+                        || wallet.equals(attempt.channel())
+                        || (PaymentChannel.WECHAT.name().equals(channel)
+                                && "SUCCESS".equals(attempt.status())))
+                && !"CLOSED".equals(attempt.status());
     }
 }

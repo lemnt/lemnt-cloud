@@ -1,17 +1,22 @@
 package com.lemnt.pay.application.paymentrefund.service;
 
 import com.lemnt.pay.application.payment.service.PayNotifyTaskService;
+import com.lemnt.pay.application.payment.service.RechargeService;
+import com.lemnt.pay.application.payment.service.WalletService;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
 import com.lemnt.pay.domain.order.model.FrozenRefundPlan;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.model.PayNotifyType;
 import com.lemnt.pay.domain.payment.model.PaymentOperator;
 import com.lemnt.pay.domain.payment.model.PaymentRules;
+import com.lemnt.pay.domain.payment.model.WalletBizType;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
 
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +36,8 @@ public class PaymentRefundService {
     private final TradePaymentGateway payments;
     private final PaymentRefundGateway refunds;
     private final PayNotifyTaskService tasks;
+    private final WalletService wallet;
+    private final RechargeService recharges;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
     public PaymentRefund prepare(String afterSaleNo) {
@@ -122,7 +129,10 @@ public class PaymentRefundService {
         return "REFUND";
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    @Transactional(
+            propagation = Propagation.REQUIRES_NEW,
+            isolation = Isolation.READ_COMMITTED,
+            rollbackFor = Exception.class)
     public PaymentRefund complete(PaymentRefund original, PaymentRefundResult result) {
         if (original == null
             || result == null
@@ -139,6 +149,8 @@ public class PaymentRefundService {
             || result.channelRefundNo().length() > 128))) {
             throw new IllegalStateException("渠道退款结果与本地退款单不一致");
         }
+        var rechargeResult = recharges.completeChannelRefund(original, result);
+        if (rechargeResult != null) return rechargeResult;
         var plan = orders.refundPlan(original.afterSaleNo());
         requirePlan(plan);
         if (!plan.orderNo().equals(original.orderNo())
@@ -177,6 +189,14 @@ public class PaymentRefundService {
                     : result.channelRefundNo());
         if (!refunds.updateResult(updated)) throw new IllegalStateException("退款状态写入冲突");
         if ("SUCCESS".equals(updated.status())) {
+            if (PaymentChannel.WALLET.name().equals(updated.channel())) {
+                wallet.credit(
+                        plan.memberId(),
+                        WalletBizType.PAYMENT_REFUND,
+                        updated.refundNo(),
+                        updated.amount(),
+                        "订单余额退款");
+            }
             tasks.enqueueForDelivery(PayNotifyType.REFUND, updated.refundNo(), updated.orderNo());
         }
         return updated;

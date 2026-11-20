@@ -7,6 +7,7 @@ import * as api from '../api/paymentApi';
 import PaymentTrendDrawer from './PaymentTrendDrawer';
 import type { PaymentRecord, RefundRecord, PaymentFilter, RefundFilter } from '../api/paymentApi';
 const paymentStates = { WAITING: '待支付', SUCCESS: '支付成功', CLOSED: '已关闭' };
+const paymentOrderStates = { ...paymentStates, SUCCESS: '已收款', RECONCILE_REQUIRED: '待对账' };
 const refundStates = { WAITING: '退款处理中', SUCCESS: '退款成功', FAILED: '退款失败' };
 export function PaymentPage() {
   return <TransactionPage refund={false} />;
@@ -52,7 +53,7 @@ function TransactionPage({ refund }: { refund: boolean }) {
       dataIndex: 'channel',
       valueType: 'select',
       search: !refund,
-      valueEnum: { ALIPAY: '支付宝', WECHAT: '微信支付', SANDBOX: '沙箱' },
+      valueEnum: { ALIPAY: '支付宝', WECHAT: '微信支付', WALLET: '钱包余额', SANDBOX: '沙箱' },
     },
     { title: '金额（元）', dataIndex: 'amount', search: false },
     { title: '状态', dataIndex: 'status', valueType: 'select', valueEnum: states },
@@ -148,7 +149,35 @@ function TransactionPage({ refund }: { refund: boolean }) {
                       { key: 'refund', label: '退款交易号', children: value.refundNo },
                       { key: 'after', label: '售后单号', children: value.afterSaleNo },
                     ]
-                  : [{ key: 'id', label: '支付单ID', children: value.id }]),
+                  : [
+                      { key: 'id', label: '支付单ID', children: value.id },
+                      {
+                        key: 'paymentOrderNo',
+                        label: '支付主单号',
+                        children: value.paymentOrderNo ?? '—',
+                      },
+                      {
+                        key: 'paymentOrderStatus',
+                        label: '支付主单状态',
+                        children:
+                          value.paymentOrderStatus == null
+                            ? '—'
+                            : (paymentOrderStates[
+                                value.paymentOrderStatus as keyof typeof paymentOrderStates
+                              ] ?? value.paymentOrderStatus),
+                      },
+
+                      {
+                        key: 'feeRate',
+                        label: '成交费率',
+                        children: value.channelFeeRate == null ? '—' : value.channelFeeRate + '%',
+                      },
+                      {
+                        key: 'feeAmount',
+                        label: '按费率计算手续费（元）',
+                        children: value.channelFeeAmount ?? '—',
+                      },
+                    ]),
                 { key: 'payment', label: '支付单号', children: value.paymentNo },
                 { key: 'order', label: '订单号', children: value.orderNo },
                 { key: 'amount', label: '金额（元）', children: value.amount },

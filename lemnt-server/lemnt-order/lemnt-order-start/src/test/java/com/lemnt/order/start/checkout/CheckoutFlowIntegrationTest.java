@@ -10,6 +10,8 @@ import com.lemnt.order.application.aftersale.cmd.AfterSaleReturnCmd;
 import com.lemnt.order.application.aftersale.executor.AfterSalePageQueryExe;
 import com.lemnt.order.application.aftersale.qry.AfterSalePageQry;
 import com.lemnt.order.application.aftersale.service.AfterSaleService;
+import com.lemnt.order.application.brokerage.executor.BrokerageProductEstimateQueryExe;
+import com.lemnt.order.application.brokerage.service.BrokerageService;
 import com.lemnt.order.application.delivery.cmd.DeliveryChargeCmd;
 import com.lemnt.order.application.delivery.cmd.DeliveryExpressTemplateCreateCmd;
 import com.lemnt.order.application.delivery.service.DeliveryManagementService;
@@ -26,12 +28,12 @@ import com.lemnt.order.application.fulfillment.qry.ShipmentPageQry;
 import com.lemnt.order.application.fulfillment.service.OrderFulfillmentService;
 import com.lemnt.order.application.member.service.MemberValidationService;
 import com.lemnt.order.application.order.cmd.OrderAdjustPriceCmd;
+import com.lemnt.order.application.order.cmd.OrderCommentCreateCmd;
 import com.lemnt.order.application.order.cmd.OrderRemarkUpdateCmd;
 import com.lemnt.order.application.order.executor.OrderRemarkUpdateCmdExe;
 import com.lemnt.order.application.order.executor.OrderStatisticsQueryExe;
 import com.lemnt.order.application.order.executor.TradeOrderCloseCmdExe;
 import com.lemnt.order.application.order.service.OrderAdjustmentService;
-import com.lemnt.order.application.order.cmd.OrderCommentCreateCmd;
 import com.lemnt.order.application.order.service.OrderCommentService;
 import com.lemnt.order.application.order.service.OrderLifecycleService;
 import com.lemnt.order.application.order.service.OrderLogService;
@@ -57,10 +59,8 @@ import com.lemnt.order.domain.aftersale.gateway.AfterSaleGateway;
 import com.lemnt.order.domain.aftersale.gateway.AfterSaleLogGateway;
 import com.lemnt.order.domain.aftersale.model.AfterSale;
 import com.lemnt.order.domain.aftersale.model.AfterSaleLog;
-import com.lemnt.order.domain.cart.gateway.CartSnapshotGateway;
-import com.lemnt.order.application.brokerage.service.BrokerageService;
-import com.lemnt.order.application.brokerage.executor.BrokerageProductEstimateQueryExe;
 import com.lemnt.order.domain.brokerage.gateway.OrderCommissionLineGateway;
+import com.lemnt.order.domain.cart.gateway.CartSnapshotGateway;
 import com.lemnt.order.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.order.domain.config.model.TradeConfig;
 import com.lemnt.order.domain.delivery.gateway.DeliveryExpressGateway;
@@ -95,25 +95,32 @@ import com.lemnt.order.start.TradeOrderScheduler;
 import com.lemnt.order.start.support.CommerceEventPump;
 import com.lemnt.order.start.support.CommerceTestDefaults;
 import com.lemnt.order.start.support.CommerceTestFixture;
+import com.lemnt.pay.application.payment.cmd.PaymentPrepayCmd;
 import com.lemnt.pay.application.payment.executor.MemberPaymentStatusQueryExe;
 import com.lemnt.pay.application.payment.executor.PaymentNotifyCmdExe;
 import com.lemnt.pay.application.payment.executor.PaymentPageQueryExe;
+import com.lemnt.pay.application.payment.executor.PaymentPrepayCmdExe;
 import com.lemnt.pay.application.payment.executor.TradePaymentCreateCmdExe;
 import com.lemnt.pay.application.payment.qry.MemberPaymentStatusQry;
 import com.lemnt.pay.application.payment.qry.PaymentPageQry;
+import com.lemnt.pay.application.payment.service.PaymentAttemptService;
+import com.lemnt.pay.application.payment.service.RechargeService;
+import com.lemnt.pay.application.payment.service.WalletService;
 import com.lemnt.pay.application.paymentrefund.executor.PaymentRefundPageQueryExe;
 import com.lemnt.pay.application.paymentrefund.qry.PaymentRefundPageQry;
+import com.lemnt.pay.application.paymentrefund.service.PaymentRefundService;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
-import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.channel.model.PayChannelConfig;
+import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
+import com.lemnt.pay.domain.payment.model.WalletBizType;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefund;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
-import com.lemnt.pay.infrastructure.channel.support.PayChannelConfigResolver;
-import com.lemnt.pay.infrastructure.channel.factory.PaymentChannelFactory;
 import com.lemnt.pay.infrastructure.channel.adapter.AbstractChannelAdapter;
+import com.lemnt.pay.infrastructure.channel.factory.PaymentChannelFactory;
+import com.lemnt.pay.infrastructure.channel.support.PayChannelConfigResolver;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundChannelGatewayImpl;
 import com.lemnt.product.application.product.cmd.ProductCommentCreateCmd;
 import com.lemnt.product.application.product.cmd.ProductCommentReplyCmd;
@@ -136,10 +143,10 @@ import com.lemnt.product.domain.product.gateway.ProductCategoryGateway;
 import com.lemnt.product.domain.product.gateway.ProductCommentGateway;
 import com.lemnt.product.domain.product.gateway.ProductSkuGateway;
 import com.lemnt.product.domain.product.gateway.ProductSpuGateway;
-import com.lemnt.product.domain.product.model.ProductBrand;
-import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.Product;
+import com.lemnt.product.domain.product.model.ProductBrand;
 import com.lemnt.product.domain.product.model.ProductCatalogValidation;
+import com.lemnt.product.domain.product.model.ProductCategory;
 import com.lemnt.product.domain.product.model.ProductComment;
 import com.lemnt.product.domain.product.model.ProductSku;
 import com.lemnt.product.domain.product.model.ProductSkuSpec;
@@ -202,6 +209,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -3122,6 +3130,204 @@ class CheckoutFlowIntegrationTest {
         assertEquals(List.of(1, 40), logs.stream().map(OrderLog::operateType).toList());
         assertEquals(1L, logs.get(1).userId());
         assertEquals("CLOSED", header.status());
+    }
+
+    /** 充值实付与赠送额来自套餐快照，渠道确认后才入账。 */
+    @Test
+    void wechatRechargeAndOriginalRefundCommitWalletExactlyOnce() {
+        var jdbc = tradeComponents.jdbc("pay");
+        jdbc.update(
+                "INSERT INTO pay_recharge_package (id,name,pay_price,bonus_price) VALUES (900,'充值测试',10,2)");
+        var recharge = tradeComponents.get(RechargeService.class);
+        var wallet = tradeComponents.get(WalletService.class);
+        var value = recharge.create(1L, 900L, "RECHARGE-1");
+        assertThrows(
+                ServiceException.class, () -> recharge.confirmPaid(value.rechargeNo(), "WECHAT"));
+        assertThrows(
+                ServiceException.class,
+                () -> recharge.preparePayment(2L, value.rechargeNo(), "app"));
+        var first = recharge.preparePayment(1L, value.rechargeNo(), "app");
+        tradeComponents
+                .jdbc("pay")
+                .update(
+                        "UPDATE pay_payment SET expires_at_epoch_second=1 WHERE payment_no=?",
+                        first.paymentNo());
+        tradeComponents.get(PaymentAttemptService.class).closeExpired(first.paymentNo());
+        var payment = recharge.preparePayment(1L, value.rechargeNo(), "app");
+        assertNotEquals(first.paymentNo(), payment.paymentNo());
+        assertEquals(
+                payment.paymentNo(),
+                recharge.preparePayment(1L, value.rechargeNo(), "app").paymentNo());
+        assertThrows(
+                ServiceException.class, () -> recharge.confirmPaid(value.rechargeNo(), "WECHAT"));
+        var notice =
+                new VerifiedPaymentNotification(
+                        payment.paymentNo(),
+                        value.rechargeNo(),
+                        "WECHAT",
+                        "WX-RECHARGE",
+                        new BigDecimal("10.00"),
+                        "WX-RECHARGE");
+        notify.execute(notice);
+        notify.execute(notice);
+        assertEquals("PAID", recharge.find(value.rechargeNo()).status());
+        assertEquals(new BigDecimal("12.00"), wallet.getOrCreate(1L).balance());
+
+        var refund = recharge.prepareChannelRefund(value.rechargeNo());
+        assertEquals(payment.paymentNo(), refund.paymentNo());
+        assertEquals(new BigDecimal("10.00"), refund.amount());
+        assertEquals(
+                refund.refundNo(), recharge.prepareChannelRefund(value.rechargeNo()).refundNo());
+        assertEquals("REFUNDING", recharge.find(value.rechargeNo()).status());
+        assertEquals(new BigDecimal("12.00"), wallet.getOrCreate(1L).freezePrice());
+        assertEquals(0, wallet.getOrCreate(1L).balance().signum());
+        var results = tradeComponents.get(PaymentRefundService.class);
+        var complete =
+                new PaymentRefundResult(
+                        refund.refundNo(),
+                        payment.paymentNo(),
+                        "WECHAT",
+                        refund.amount(),
+                        "SUCCESS",
+                        "WX-REFUND");
+        results.complete(refund, complete);
+        results.complete(refund, complete);
+        assertEquals("REFUNDED", recharge.find(value.rechargeNo()).status());
+        assertEquals(0, wallet.getOrCreate(1L).freezePrice().signum());
+        assertEquals(0, wallet.getOrCreate(1L).balance().signum());
+        assertEquals(
+                2,
+                jdbc.queryForObject("SELECT COUNT(*) FROM pay_wallet_transaction", Integer.class));
+        assertEquals(0, jdbc.queryForObject("SELECT COUNT(*) FROM pay_notify_task", Integer.class));
+    }
+
+    /** 失败终态释放余额，重复失败回调不重复解冻。 */
+    @Test
+    void failedWechatRechargeRefundReleasesEntireFreeze() {
+        tradeComponents
+                .jdbc("pay")
+                .update(
+                        "INSERT INTO pay_recharge_package (id,name,pay_price,bonus_price) VALUES (900,'失败退款测试',10,2)");
+        var recharge = tradeComponents.get(RechargeService.class);
+        var wallet = tradeComponents.get(WalletService.class);
+        var value = recharge.create(1L, 900L, "RECHARGE-FAIL");
+        var payment = recharge.preparePayment(1L, value.rechargeNo(), "app");
+        notify.execute(
+                new VerifiedPaymentNotification(
+                        payment.paymentNo(),
+                        value.rechargeNo(),
+                        "WECHAT",
+                        "WX-RECHARGE-2",
+                        new BigDecimal("10.00"),
+                        "WX-RECHARGE-2"));
+        var refund = recharge.prepareChannelRefund(value.rechargeNo());
+        var failure =
+                new PaymentRefundResult(
+                        refund.refundNo(),
+                        payment.paymentNo(),
+                        "WECHAT",
+                        refund.amount(),
+                        "FAILED",
+                        "WX-FAILED");
+        var results = tradeComponents.get(PaymentRefundService.class);
+        results.complete(refund, failure);
+        results.complete(refund, failure);
+        assertEquals("PAID", recharge.find(value.rechargeNo()).status());
+        assertEquals("FAILED", recharge.prepareChannelRefund(value.rechargeNo()).status());
+        assertEquals(0, wallet.getOrCreate(1L).freezePrice().signum());
+        assertEquals(new BigDecimal("12.00"), wallet.getOrCreate(1L).balance());
+    }
+
+    private void enableWalletChannel() {
+        var pay = tradeComponents.jdbc("pay");
+        pay.update(
+                "INSERT INTO pay_app (id,app_key,name,status) VALUES (900,'wallet-test','钱包商城',0)");
+        pay.update(
+                "INSERT INTO pay_channel (app_id,code,status,fee_rate) VALUES (900,'WALLET',0,0)");
+    }
+
+    /** 钱包扣款与退款使用原单流水，余额不足时支付单和通知一起回滚。 */
+    @Test
+    void walletPaymentChecksBalanceAndRefundsOnlyOnce() {
+        enableWalletChannel();
+        var order = place("WALLET-BALANCE", null);
+        var cmd = new PaymentPrepayCmd(1L, order.orderNo(), "wallet-test", "WALLET");
+        var prepay = tradeComponents.get(PaymentPrepayCmdExe.class);
+        var wallet = tradeComponents.get(WalletService.class);
+        assertThrows(ServiceException.class, () -> prepay.execute(cmd));
+        assertTrue(payments.findByOrderNo(order.orderNo()).isEmpty());
+
+        wallet.credit(1L, WalletBizType.RECHARGE, "TOPUP", order.totalAmount(), "测试充值");
+        var submitted = prepay.execute(cmd);
+        assertEquals(submitted.paymentNo(), prepay.execute(cmd).paymentNo());
+        assertThrows(
+                IllegalStateException.class,
+                () -> paymentCreate.execute(order.orderNo(), "WECHAT"));
+        assertEquals(0, wallet.getOrCreate(1L).balance().signum());
+        events.drainOrThrow();
+        assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
+        assertEquals(submitted.paymentNo(), prepay.execute(cmd).paymentNo());
+
+        var sale =
+                approvedAfterSale(new RefundRequestCmd(order.orderNo(), "WALLET-REFUND", "钱包原路退回"));
+        var refunds = tradeComponents.get(PaymentRefundCreateCmdExe.class);
+        var refunded = refunds.execute(sale.refundNo());
+        assertEquals("SUCCESS", refunded.status());
+        assertEquals(refunded.refundNo(), refunds.execute(sale.refundNo()).refundNo());
+        assertEquals(0, wallet.getOrCreate(1L).balance().compareTo(order.totalAmount()));
+        assertEquals("REFUNDED", orderPersistenceService.findByOrderNo(order.orderNo()).status());
+        assertEquals(
+                2,
+                tradeComponents
+                        .jdbc("pay")
+                        .queryForObject(
+                                "SELECT COUNT(*) FROM pay_wallet_transaction WHERE biz_type IN ('PAYMENT','PAYMENT_REFUND')",
+                                Integer.class));
+    }
+
+    /** 持有钱包支付锁时启动关单，扣款提交后关单读取最新资金事实并退出。 */
+    @Test
+    void concurrentCloseCannotReleaseAnOrderChargedToWallet() throws Exception {
+        enableWalletChannel();
+        var order = place("WALLET-CLOSE", null);
+        var cmd = new PaymentPrepayCmd(1L, order.orderNo(), "wallet-test", "WALLET");
+        var prepay = tradeComponents.get(PaymentPrepayCmdExe.class);
+        var wallet = tradeComponents.get(WalletService.class);
+        wallet.credit(1L, WalletBizType.RECHARGE, "TOPUP-CLOSE", order.totalAmount(), "测试充值");
+        var prepareEntered = new CountDownLatch(1);
+        var allowPayment = new CountDownLatch(1);
+        tradeComponents.intercept(
+                (type, method, args, call) -> {
+                    if (method.getName().equals("preparePayment")
+                            && order.orderNo().equals(args[0])) {
+                        prepareEntered.countDown();
+                        if (!allowPayment.await(5, TimeUnit.SECONDS))
+                            throw new IllegalStateException("等待支付超时");
+                    }
+                    return call.call();
+                });
+        var pool = Executors.newFixedThreadPool(2);
+        try {
+            var paid = pool.submit(() -> prepay.execute(cmd));
+            assertTrue(prepareEntered.await(5, TimeUnit.SECONDS));
+            var closing = new CountDownLatch(1);
+            var closed =
+                    pool.submit(
+                            () -> {
+                                closing.countDown();
+                                return closer.execute(order.orderNo());
+                            });
+            assertTrue(closing.await(5, TimeUnit.SECONDS));
+            assertThrows(TimeoutException.class, () -> closed.get(200, TimeUnit.MILLISECONDS));
+            allowPayment.countDown();
+            assertEquals("WALLET", paid.get(8, TimeUnit.SECONDS).channel());
+            assertFalse(closed.get(8, TimeUnit.SECONDS));
+            events.drainOrThrow();
+            assertEquals("PAID", orderPersistenceService.findByOrderNo(order.orderNo()).status());
+        } finally {
+            allowPayment.countDown();
+            pool.shutdownNow();
+        }
     }
 
     /**

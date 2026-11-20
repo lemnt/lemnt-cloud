@@ -5,6 +5,8 @@ import com.lemnt.order.domain.event.gateway.OrderEventGateway;
 import com.lemnt.order.domain.fulfillment.gateway.InventoryConfirmationGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOperator;
+import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.order.domain.payment.gateway.WalletOrderLockGateway;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,8 @@ public class OrderLifecycleService {
     private final OrderLogService logs;
     private final OrderEventGateway events;
     private final ActivityOrderLifecycleService activities;
+    private final WalletOrderLockGateway walletLock;
+    private final TradePaymentGateway payments;
 
     /**
      * 库存预留成功。
@@ -68,13 +72,16 @@ public class OrderLifecycleService {
      * 库存已预占但商城同步回调失败：关闭订单，交由统一补偿恢复 SKU 库存与活动库存。
      */
     @Transactional(rollbackFor = Exception.class)
-    public void reservationCallbackFailed(String orderNo) {
+    public boolean reservationCallbackFailed(String orderNo) {
+        walletLock.lock(orderNo);
         var order = orderPersistenceService.findByOrderNoForUpdate(orderNo);
         if (order == null) {
             throw new IllegalArgumentException("订单不存在");
         }
-        if (!"PENDING_PAYMENT".equals(order.status())) {
-            return;
+        if (!"PENDING_PAYMENT".equals(order.status())
+                || payments.findByOrderNo(orderNo).stream()
+                        .anyMatch(payment -> "SUCCESS".equals(payment.status()))) {
+            return false;
         }
         if (!tradeOrderGateway.transitionStatus(orderNo, "PENDING_PAYMENT", "CLOSED")) {
             throw new IllegalStateException("订单状态冲突");
@@ -83,6 +90,7 @@ public class OrderLifecycleService {
         events.closed(order);
         logs.record(
             order, "PENDING_PAYMENT", "CLOSED", 41, TradeOperator.system(), "商城预占回调失败，系统取消订单");
+        return true;
     }
 
     /**

@@ -21,6 +21,9 @@ public class PaymentDetailQueryExe {
      * 按交易编号查询详情。
      */
     public PaymentDTO execute(String no) {
-        return PaymentDTOConverter.toDTO(gateway.findByPaymentNo(PaymentRules.text(no, 40)));
+        var payment = gateway.findByPaymentNo(PaymentRules.text(no, 40));
+        return payment == null
+                ? null
+                : PaymentDTOConverter.toDTO(payment, gateway.findPaymentOrder(payment.orderNo()));
     }
 }

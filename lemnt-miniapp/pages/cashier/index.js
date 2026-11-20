@@ -1,31 +1,12 @@
 const config = require('../../config');
 const runtime = require('../../services/orderRuntime');
-const { decodeChannels, decodePrepay } = require('../../services/payment');
+const {
+  decodeChannels,
+  decodePrepay,
+  loginCode,
+  requestPayment,
+} = require('../../services/payment');
 const { decodePaymentStatus } = require('../../services/paymentStatus');
-
-/** 微信登录凭证，一次性用于服务端换取 openid，客户端不保存。 */
-function loginCode() {
-  return new Promise((resolve, reject) => {
-    wx.login({
-      success: (result) => {
-        if (result && typeof result.code === 'string' && result.code) resolve(result.code);
-        else reject(new Error('微信登录失败'));
-      },
-      fail: () => reject(new Error('微信登录失败')),
-    });
-  });
-}
-
-/** 调起微信收银台；用户取消或失败都不当作已支付。 */
-function requestPayment(params) {
-  return new Promise((resolve, reject) => {
-    wx.requestPayment({
-      ...params,
-      success: () => resolve(),
-      fail: () => reject(new Error('支付未完成')),
-    });
-  });
-}
 
 Page({
   data: {
@@ -116,6 +97,11 @@ Page({
       // 微信小程序内支付需先把当前会员的 openid 绑定到会员服务，再由 pay 生成 JSAPI 参数。
       if (input.channel === 'WECHAT') await this.memberClient.wechatLogin(await loginCode());
       const prepay = decodePrepay(await this.client.prepay(input), this.data.orderNo);
+      if (prepay.channel === 'WALLET') {
+        this.setData({ prepay });
+        await this.loadStatus();
+        return;
+      }
       this.setData({
         prepay,
         message:

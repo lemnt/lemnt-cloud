@@ -1,6 +1,13 @@
+const config = require('../../config');
 const runtime = require('../../services/orderRuntime');
+const { decodePrepay, loginCode, requestPayment } = require('../../services/payment');
 
-const STATUS_LABEL = Object.freeze({ PENDING: '待支付', PAID: '已到账', REFUNDED: '已退款' });
+const STATUS_LABEL = Object.freeze({
+  PENDING: '待支付',
+  PAID: '已到账',
+  REFUNDING: '退款中',
+  REFUNDED: '已退款',
+});
 const MONEY = /^\d+\.\d{2}$/;
 
 Page({
@@ -11,6 +18,7 @@ Page({
     loggedIn: false,
     packages: [],
     selectedPackage: null,
+    customAmount: '',
     recharges: [],
     total: 0,
     pageNum: 0,
@@ -29,6 +37,7 @@ Page({
     this.setData({
       packages: [],
       selectedPackage: null,
+      customAmount: '',
       recharges: [],
       total: 0,
       pageNum: 0,
@@ -39,6 +48,7 @@ Page({
     this.setData({
       packages: [],
       selectedPackage: null,
+      customAmount: '',
       recharges: [],
       total: 0,
       pageNum: 0,
@@ -60,6 +70,7 @@ Page({
       this.setData({
         packages: packages.map(this.toPackage),
         selectedPackage: null,
+        customAmount: '',
       });
       this.resetRequest();
       await this.loadPage(1, true);
@@ -77,7 +88,12 @@ Page({
       return;
     }
     this.resetRequest();
-    this.setData({ selectedPackage: value, error: '' });
+    this.setData({ selectedPackage: value, customAmount: '', error: '' });
+  },
+  inputAmount(event) {
+    const value = event.detail.value;
+    if (value !== this.data.customAmount) this.resetRequest();
+    this.setData({ customAmount: value, selectedPackage: null, error: '' });
   },
   async loadPage(pageNum, reset) {
     const page = await this.client.myRecharges({ pageNum, pageSize: 10 });
@@ -94,19 +110,37 @@ Page({
   recharge() {
     return runtime.run(this, async () => {
       const pkg = this.data.selectedPackage;
-      if (!pkg) throw new Error('请选择充值套餐');
+      const amount = this.data.customAmount;
+      if (!pkg && !amount) throw new Error('请选择套餐或填写充值金额');
       if (!this.requestNo) {
         this.requestNo =
           'MINI-RC-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
       }
       const created = this.toRecharge(
-        await this.client.createRecharge({ packageId: Number(pkg.id), requestNo: this.requestNo }),
+        await this.client.createRecharge({
+          ...(pkg ? { packageId: Number(pkg.id) } : { amount }),
+          requestNo: this.requestNo,
+        }),
       );
       wx.showToast({ title: '充值单已创建', icon: 'success' });
       this.resetRequest();
-      this.setData({ selectedPackage: null });
+      this.setData({ selectedPackage: null, customAmount: '' });
       await this.loadPage(1, true);
       return created;
+    });
+  },
+  payRecharge(event) {
+    return runtime.run(this, async () => {
+      const no = event.currentTarget.dataset.no;
+      if (!this.data.recharges.some((item) => item.rechargeNo === no && item.status === 'PENDING'))
+        throw new Error('充值单无需支付');
+      if (!config.paymentAppKey) throw new Error('未配置支付应用');
+      await this.memberClient.wechatLogin(await loginCode());
+      const payment = decodePrepay(await this.client.rechargePrepay(no, config.paymentAppKey), no);
+      if (payment.channel !== 'WECHAT' || !payment.params.paySign)
+        throw new Error('微信支付参数不合法');
+      await requestPayment(payment.params);
+      await this.loadPage(1, true);
     });
   },
   toPackage(value) {

@@ -6,5 +6,6 @@ package com.lemnt.pay.domain.payment.model;
 public enum WalletRechargeStatus {
     PENDING,
     PAID,
+    REFUNDING,
     REFUNDED
 }

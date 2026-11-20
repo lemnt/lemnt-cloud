@@ -20,7 +20,7 @@ test('套餐、创建充值单与本人充值单只走交易路径', async () =>
   const { client, calls } = setup({ statusCode: 200, data: { code: 200, data: [] } });
   await client.rechargePackages();
   assert.equal(calls[0].url, 'https://example.test/trade/app/recharge-packages');
-  await client.createRecharge({ packageId: 3, requestNo: 'REQ1', amount: '1.00' });
+  await client.createRecharge({ packageId: 3, requestNo: 'REQ1' });
   assert.equal(calls[1].url, 'https://example.test/trade/app/wallet/recharges');
   assert.deepEqual(calls[1].data, { packageId: 3, requestNo: 'REQ1' });
   const page = await client.myRecharges({ pageNum: 2, pageSize: 10 });
@@ -76,4 +76,25 @@ test('充值页校验套餐金额并复用请求编号', async () => {
   assert.throws(() =>
     page.toRecharge({ rechargeNo: 'RC1', status: 'UNKNOWN', totalPrice: '1.00' }),
   );
+});
+
+test('小程序向支付服务请求本人充值单的微信参数', async () => {
+  const configured = setup({
+    statusCode: 200,
+    data: { code: 200, data: { paymentNo: 'PAY1234' } },
+  });
+  await configured.client.rechargePrepay('RC1234', 'lemnt-mall');
+  assert.match(configured.calls[0].url, /\/trade\/app\/wallet\/recharges\/RC1234\/payment$/);
+  assert.equal(configured.calls[0].method, 'POST');
+  assert.deepEqual(configured.calls[0].data, { appKey: 'lemnt-mall' });
+});
+
+test('自定义充值提交精确金额，套餐与金额不能同时提交', async () => {
+  const { client, calls } = setup();
+  await client.createRecharge({ amount: '23.45', requestNo: 'CUSTOM' });
+  assert.deepEqual(calls[0].data, { amount: '23.45', requestNo: 'CUSTOM' });
+  assert.throws(() => client.createRecharge({ amount: '0.00', requestNo: 'CUSTOM' }));
+  assert.throws(() => client.createRecharge({ amount: '1.001', requestNo: 'CUSTOM' }));
+  assert.throws(() => client.createRecharge({ amount: '21474836.48', requestNo: 'CUSTOM' }));
+  assert.throws(() => client.createRecharge({ packageId: 3, amount: '2', requestNo: 'CUSTOM' }));
 });

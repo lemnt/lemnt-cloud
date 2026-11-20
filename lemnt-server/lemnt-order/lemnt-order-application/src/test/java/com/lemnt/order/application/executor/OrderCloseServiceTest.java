@@ -8,6 +8,7 @@ import com.lemnt.order.domain.event.gateway.OrderEventGateway;
 import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOrder;
 import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.order.domain.payment.gateway.WalletOrderLockGateway;
 import com.lemnt.order.domain.payment.model.PaymentRecord;
 
 import org.junit.jupiter.api.Test;
@@ -28,8 +29,14 @@ class OrderCloseServiceTest {
     final OrderEventGateway events = mock(OrderEventGateway.class);
     final ActivityOrderLifecycleService activities = mock(ActivityOrderLifecycleService.class);
     final OrderCloseService closer =
-        new OrderCloseService(
-            persistence, orders, payments, events, activities, mock(OrderLogService.class));
+            new OrderCloseService(
+                    persistence,
+                    orders,
+                    payments,
+                    events,
+                    activities,
+                    mock(OrderLogService.class),
+                    mock(WalletOrderLockGateway.class));
 
     void pending() {
         when(persistence.findByOrderNoForUpdate("TR1"))

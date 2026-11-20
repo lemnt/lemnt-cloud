@@ -7,6 +7,7 @@ import com.lemnt.order.domain.order.gateway.TradeOrderGateway;
 import com.lemnt.order.domain.order.model.TradeOperator;
 import com.lemnt.order.domain.order.model.TradeOrder;
 import com.lemnt.order.domain.payment.gateway.TradePaymentGateway;
+import com.lemnt.order.domain.payment.gateway.WalletOrderLockGateway;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class OrderCloseService {
     private final OrderEventGateway events;
     private final ActivityOrderLifecycleService activities;
     private final OrderLogService logs;
+    private final WalletOrderLockGateway walletLock;
 
     /**
      * 在本地事务关闭未支付订单，提交后由调用方发送库存与券统一补偿。
@@ -44,6 +46,8 @@ public class OrderCloseService {
         if (orderNo == null || orderNo.isBlank()) {
             throw new IllegalArgumentException("订单号不能为空");
         }
+        // 先拿跨服务订单锁，再拿本库行锁，与钱包扣款的顺序一致。
+        walletLock.lock(orderNo);
         TradeOrder order = orderPersistenceService.findByOrderNoForUpdate(orderNo);
         if (order == null) {
             throw new IllegalArgumentException("订单不存在");

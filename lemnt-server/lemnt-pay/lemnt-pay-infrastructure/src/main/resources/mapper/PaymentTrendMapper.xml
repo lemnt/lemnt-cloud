@@ -14,14 +14,16 @@
         FROM (
             SELECT CAST(paid_time AS DATE) AS funding_day, COUNT(*) AS payments, SUM(amount) AS paid,
                    0.00 AS recharged
-            FROM pay_payment
-            WHERE status='SUCCESS' AND paid_time &gt;= #{from} AND paid_time &lt; #{until}
+            FROM pay_payment p
+            WHERE status='SUCCESS'
+              AND NOT EXISTS (SELECT 1 FROM pay_wallet_recharge r WHERE r.recharge_no=p.order_no)
+              AND paid_time &gt;= #{from} AND paid_time &lt; #{until}
             GROUP BY CAST(paid_time AS DATE)
             UNION ALL
             SELECT CAST(paid_time AS DATE) AS funding_day, 0 AS payments, 0.00 AS paid,
                    SUM(pay_price) AS recharged
             FROM pay_wallet_recharge
-            WHERE status IN ('PAID','REFUNDED') AND paid_time &gt;= #{from} AND paid_time &lt; #{until}
+            WHERE status IN ('PAID','REFUNDING','REFUNDED') AND paid_time &gt;= #{from} AND paid_time &lt; #{until}
             GROUP BY CAST(paid_time AS DATE)
         ) daily
         GROUP BY funding_day

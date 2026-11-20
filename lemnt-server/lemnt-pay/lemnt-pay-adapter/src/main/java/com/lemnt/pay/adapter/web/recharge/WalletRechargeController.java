@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 
 /**
- * 后台充值单管理；确认到账代替真实渠道回调。
+ * 后台充值单管理，兼容历史人工充值，在线充值由渠道结果确认。
  */
 @Tag(name = "充值单")
 @RestController

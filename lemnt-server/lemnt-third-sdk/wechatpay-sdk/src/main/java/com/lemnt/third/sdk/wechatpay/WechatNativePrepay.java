@@ -25,6 +25,9 @@ final class WechatNativePrepay {
         request.setOutTradeNo(command.outTradeNo());
         request.setAttach(command.orderNo());
         request.setNotifyUrl(command.notifyUrl());
+        if (command.expiresAtEpochSecond() != null) {
+            request.setTimeExpire(WechatPrepaySupport.timeExpire(command.expiresAtEpochSecond()));
+        }
         Amount amount = new Amount();
         amount.setCurrency(WechatPrepaySupport.CURRENCY);
         amount.setTotal(WechatPrepaySupport.fenInt(command.amount(), "支付金额"));

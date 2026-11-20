@@ -4,17 +4,20 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.application.payment.cmd.PaymentPrepayCmd;
 import com.lemnt.pay.application.payment.executor.PaymentPrepayCmdExe;
 import com.lemnt.pay.application.payment.executor.TradePaymentCreateCmdExe;
-import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
-import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
+import com.lemnt.pay.application.payment.service.PaymentAttemptService;
+import com.lemnt.pay.application.payment.service.WalletOrderPaymentService;
 import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
 import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
-import com.lemnt.pay.domain.payment.gateway.PayerOpenIdGateway;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.channel.model.PayApp;
 import com.lemnt.pay.domain.channel.model.PayChannelConfig;
+import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
+import com.lemnt.pay.domain.order.model.OrderPaymentSnapshot;
+import com.lemnt.pay.domain.payment.gateway.PayerOpenIdGateway;
 import com.lemnt.pay.domain.payment.model.PaymentPrepay;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -35,8 +38,17 @@ class PaymentPrepayCmdExeTest {
     final TradePaymentCreateCmdExe payments = mock(TradePaymentCreateCmdExe.class);
     final PaymentChannelGateway gateway = mock(PaymentChannelGateway.class);
     final PayerOpenIdGateway payerOpenIds = mock(PayerOpenIdGateway.class);
+    final PaymentAttemptService attempts = mock(PaymentAttemptService.class);
     final PaymentPrepayCmdExe exe =
-        new PaymentPrepayCmdExe(orders, apps, channels, payments, gateway, payerOpenIds);
+            new PaymentPrepayCmdExe(
+                    orders,
+                    apps,
+                    channels,
+                    payments,
+                    gateway,
+                    payerOpenIds,
+                    mock(WalletOrderPaymentService.class),
+                    attempts);
 
     final PayApp app = new PayApp(1L, "lemnt-mall", "商城", 0, null, null, null, null);
     final PayChannelConfig config =
@@ -60,6 +72,12 @@ class PaymentPrepayCmdExeTest {
             new BigDecimal("8.00"),
             "WAITING",
             null);
+
+    @BeforeEach
+    void configuredAdapters() {
+        when(gateway.supports("SANDBOX")).thenReturn(true);
+        when(gateway.supports("WECHAT")).thenReturn(true);
+    }
 
     private PaymentPrepayCmd cmd() {
         return new PaymentPrepayCmd(7L, "TR1", "lemnt-mall", "sandbox");
@@ -117,13 +135,13 @@ class PaymentPrepayCmdExeTest {
         when(channels.listByAppId(1L)).thenReturn(List.of(wechatConfig));
         when(payments.execute("TR1", "WECHAT", "lemnt-mall")).thenReturn(wechatPayment);
         when(payerOpenIds.findOpenId(7L)).thenReturn("OPENID1");
-        when(gateway.prepay(wechatPayment, wechatConfig, "OPENID1"))
-            .thenReturn(new PaymentPrepay("PAY1", "WECHAT", null, Map.of()));
+        when(attempts.prepay(wechatPayment, wechatConfig, "OPENID1"))
+                .thenReturn(new PaymentPrepay("PAY1", "WECHAT", null, Map.of()));
 
         exe.execute(new PaymentPrepayCmd(7L, "TR1", "lemnt-mall", "wechat"));
 
         verify(payerOpenIds).findOpenId(7L);
-        verify(gateway).prepay(wechatPayment, wechatConfig, "OPENID1");
+        verify(attempts).prepay(wechatPayment, wechatConfig, "OPENID1");
     }
 
     @Test

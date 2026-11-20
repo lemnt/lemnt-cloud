@@ -30,12 +30,16 @@ public final class PaymentResConverter {
      */
     public static PaymentDetailRes detail(PaymentDTO value) {
         return new PaymentDetailRes(
-            value.id(),
-            value.paymentNo(),
-            value.orderNo(),
-            value.channel(),
-            value.channelTradeNo(),
-            value.amount(),
-            value.status());
+                value.id(),
+                value.paymentNo(),
+                value.orderNo(),
+                value.channel(),
+                value.channelTradeNo(),
+                value.amount(),
+                value.status(),
+                value.channelFeeRate(),
+                value.channelFeeAmount(),
+                value.paymentOrderNo(),
+                value.paymentOrderStatus());
     }
 }

@@ -4,6 +4,7 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.application.payment.executor.MemberPaymentChannelQueryExe;
 import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
 import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.channel.model.PayApp;
 import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 
@@ -21,7 +22,9 @@ import static org.mockito.Mockito.*;
 class MemberPaymentChannelQueryExeTest {
     final PayAppGateway apps = mock(PayAppGateway.class);
     final PayChannelConfigGateway channels = mock(PayChannelConfigGateway.class);
-    final MemberPaymentChannelQueryExe exe = new MemberPaymentChannelQueryExe(apps, channels);
+    final PaymentChannelGateway gateway = mock(PaymentChannelGateway.class);
+    final MemberPaymentChannelQueryExe exe =
+            new MemberPaymentChannelQueryExe(apps, channels, gateway);
 
     private PayChannelConfig config(String code, int status) {
         return new PayChannelConfig(1L, 1L, code, status, BigDecimal.ZERO, null, null, null);
@@ -32,15 +35,17 @@ class MemberPaymentChannelQueryExeTest {
         when(apps.findByAppKey("lemnt-mall"))
             .thenReturn(new PayApp(1L, "lemnt-mall", "商城", 0, null, null, null, null));
         when(channels.listByAppId(1L))
-            .thenReturn(
-                List.of(
-                    config("SANDBOX", 0),
-                    config("SANDBOX", 0),
-                    config("ALIPAY", 1),
-                    config("UNKNOWN", 0)));
+                .thenReturn(
+                        List.of(
+                                config("WECHAT", 0),
+                                config("WALLET", 0),
+                                config("WALLET", 0),
+                                config("SANDBOX", 0),
+                                config("ALIPAY", 0),
+                                config("UNKNOWN", 0)));
+        when(gateway.supports("WECHAT")).thenReturn(true);
         var result = exe.execute("lemnt-mall");
-        assertEquals(1, result.size());
-        assertEquals("SANDBOX", result.get(0).code());
+        assertEquals(List.of("WECHAT", "WALLET"), result.stream().map(v -> v.code()).toList());
     }
 
     @Test

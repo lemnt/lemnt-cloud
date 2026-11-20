@@ -26,6 +26,10 @@ public class PayNotifyDispatcher {
                 || !"SUCCESS".equals(payment.status())
                 || !task.orderNo().equals(payment.orderNo()))
                 throw new IllegalStateException("支付未成功或订单不符");
+            var master = payments.findPaymentOrder(payment.orderNo());
+            if (master != null && "RECONCILE_REQUIRED".equals(master.status())) {
+                throw new IllegalStateException("支付主单待对账");
+            }
             orders.notifyPaid(payment.orderNo(), payment.paymentNo());
         } else if ("REFUND".equals(task.type())) {
             var refund = refunds.find(task.bizNo());

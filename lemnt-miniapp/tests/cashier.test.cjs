@@ -128,6 +128,22 @@ test('微信渠道先绑定会员 openid 再唤起收银台，支付结果以服
   assert.equal(page.data.message, '支付成功');
 });
 
+test('钱包支付后直接刷新订单支付状态', async () => {
+  const page = makePage({
+    paymentChannels: async () => [{ code: 'WALLET', name: '钱包余额' }],
+    prepay: async (input) => {
+      assert.equal(input.channel, 'WALLET');
+      return { ...prepay, channel: 'WALLET', params: {} };
+    },
+    paymentStatus: async () => status('SUCCESS'),
+  });
+  await page.loadChannels();
+  await page.pay();
+  assert.equal(page.data.channel, 'WALLET');
+  assert.equal(page.data.paid, true);
+  assert.equal(page.data.message, '支付成功');
+});
+
 test('微信支付取消不当作已支付', async () => {
   const page = makePage({
     paymentChannels: async () => [{ code: 'WECHAT', name: '微信支付' }],

@@ -9,8 +9,9 @@ import com.lemnt.member.client.dto.MemberPointConfigDTO;
 import com.lemnt.member.client.dto.MemberUserDTO;
 import com.lemnt.order.domain.config.gateway.TradeConfigGateway;
 import com.lemnt.order.start.BusinessConfigTestSupport;
-import com.lemnt.pay.application.payment.executor.PaymentPrepayCmdExe;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
+import com.lemnt.pay.domain.payment.gateway.PayerOpenIdGateway;
 
 import java.util.function.LongSupplier;
 import java.util.function.Supplier;
@@ -58,7 +59,8 @@ public final class CommerceTestDefaults {
         when(benefits.refundApplied(anyString()))
             .thenAnswer(v -> events.memberRefunded.contains(v.<String>getArgument(0)));
         fixture.remote(MemberOrderBenefitsClient.class, benefits);
-        fixture.register(PaymentPrepayCmdExe.class, mock(PaymentPrepayCmdExe.class));
+        fixture.register(PaymentChannelGateway.class, mock(PaymentChannelGateway.class));
+        fixture.register(PayerOpenIdGateway.class, mock(PayerOpenIdGateway.class));
         fixture.register(PaymentChannelCloseGateway.class, payment -> true);
         fixture.register(TradeConfigGateway.class, BusinessConfigTestSupport.gateway());
     }

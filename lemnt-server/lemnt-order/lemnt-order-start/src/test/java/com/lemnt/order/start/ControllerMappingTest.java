@@ -181,6 +181,7 @@ class ControllerMappingTest {
                         POST /trade/admin/wallet-recharges/{rechargeNo}/refund trade:wallet-recharge:refund
                         GET /trade/app/recharge-packages
                         POST /trade/app/wallet/recharges
+                        POST /trade/app/wallet/recharges/{rechargeNo}/payment
                         GET /trade/app/wallet/recharges
                         GET /trade/admin/wallet-transfers trade:wallet-transfer:list
                         GET /trade/admin/wallet-transfers/{transferNo} trade:wallet-transfer:query

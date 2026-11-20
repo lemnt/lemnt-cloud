@@ -2,6 +2,9 @@ package com.lemnt.third.sdk.wechatpay;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 /**
  * 微信下单、退款共用的金额与文本规则，微信侧字段长度和精度限制在此收敛。
@@ -10,6 +13,13 @@ final class WechatPrepaySupport {
     static final String CURRENCY = "CNY";
     private static final int MAX_DESCRIPTION_LENGTH = 127;
     private static final int MAX_FEN_DIGITS = 2;
+
+    /** 从 Unix 秒生成渠道要求的 RFC3339 支付截止时间。 */
+    static String timeExpire(long epochSecond) {
+        return Instant.ofEpochSecond(epochSecond)
+                .atOffset(ZoneOffset.ofHours(8))
+                .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
 
     private WechatPrepaySupport() {
     }

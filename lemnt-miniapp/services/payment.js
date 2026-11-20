@@ -1,6 +1,7 @@
 const CHANNELS = Object.freeze({
   ALIPAY: '支付宝',
   WECHAT: '微信支付',
+  WALLET: '钱包余额',
   SANDBOX: '沙箱',
 });
 const MONEY = /^\d+\.\d{2}$/;
@@ -52,4 +53,28 @@ function decodePrepay(value, orderNo) {
   };
 }
 
-module.exports = { CHANNELS, decodeChannels, decodePrepay };
+/** 微信登录凭证，一次性用于服务端换取 openid，客户端不保存。 */
+function loginCode() {
+  return new Promise((resolve, reject) => {
+    wx.login({
+      success: (result) => {
+        if (result && typeof result.code === 'string' && result.code) resolve(result.code);
+        else reject(new Error('微信登录失败'));
+      },
+      fail: () => reject(new Error('微信登录失败')),
+    });
+  });
+}
+
+/** 调起微信收银台；用户取消或失败都不当作已支付。 */
+function requestPayment(params) {
+  return new Promise((resolve, reject) => {
+    wx.requestPayment({
+      ...params,
+      success: () => resolve(),
+      fail: () => reject(new Error('支付未完成')),
+    });
+  });
+}
+
+module.exports = { CHANNELS, decodeChannels, decodePrepay, loginCode, requestPayment };

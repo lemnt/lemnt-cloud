@@ -50,13 +50,43 @@ class PaymentManagementHttpTest {
                 .setMessageConverters(converter())
                 .build();
         mvc.perform(get("/trade/admin/payment-channels"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.data.length()").value(3))
-            .andExpect(jsonPath("$.data[0].code").value("ALIPAY"))
-            .andExpect(jsonPath("$.data[0].name").value("支付宝"))
-            .andExpect(jsonPath("$.data[1].code").value("WECHAT"))
-            .andExpect(jsonPath("$.data[2].code").value("SANDBOX"))
-            .andExpect(jsonPath("$.data[0].enabled").doesNotExist());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].code").value("WECHAT"))
+                .andExpect(jsonPath("$.data[0].name").value("微信支付"))
+                .andExpect(jsonPath("$.data[1].code").value("WALLET"))
+                .andExpect(jsonPath("$.data[1].name").value("钱包余额"))
+                .andExpect(jsonPath("$.data[0].enabled").doesNotExist());
+    }
+
+    @Test
+    void paymentDetailReturnsExactFeeSnapshot() throws Exception {
+        var query = mock(PaymentDetailQueryExe.class);
+        when(query.execute("PAY1"))
+                .thenReturn(
+                        new PaymentDTO(
+                                1L,
+                                "PAY1",
+                                "O1",
+                                "WECHAT",
+                                "CH1",
+                                new BigDecimal("10.00"),
+                                "SUCCESS",
+                                new BigDecimal("2.55"),
+                                new BigDecimal("0.26"),
+                                "PO1",
+                                "SUCCESS"));
+        var mvc =
+                MockMvcBuilders.standaloneSetup(
+                                new PaymentController(mock(PaymentPageQueryExe.class), query))
+                        .setMessageConverters(converter())
+                        .build();
+        mvc.perform(get("/trade/admin/payments/PAY1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.channelFeeRate").value("2.55"))
+                .andExpect(jsonPath("$.data.channelFeeAmount").value("0.26"))
+                .andExpect(jsonPath("$.data.paymentOrderNo").value("PO1"))
+                .andExpect(jsonPath("$.data.paymentOrderStatus").value("SUCCESS"));
     }
 
     @Test

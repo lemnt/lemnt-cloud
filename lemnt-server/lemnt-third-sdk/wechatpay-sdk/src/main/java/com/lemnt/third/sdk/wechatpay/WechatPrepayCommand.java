@@ -8,12 +8,18 @@ import java.math.BigDecimal;
  * openId 为空时使用扫码支付，非空时使用小程序 JSAPI；通知地址取自调用方配置。
  */
 public record WechatPrepayCommand(
-    String outTradeNo,
-    String orderNo,
-    BigDecimal amount,
-    String notifyUrl,
-    String openId)
-    implements Serializable {
+        String outTradeNo,
+        String orderNo,
+        BigDecimal amount,
+        String notifyUrl,
+        String openId,
+        Long expiresAtEpochSecond)
+        implements Serializable {
+
+    public WechatPrepayCommand(
+            String outTradeNo, String orderNo, BigDecimal amount, String notifyUrl, String openId) {
+        this(outTradeNo, orderNo, amount, notifyUrl, openId, null);
+    }
 
     public WechatPrepayCommand {
         WechatPrepaySupport.requireText(outTradeNo, 32, "商户支付单号");

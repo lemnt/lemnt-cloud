@@ -175,6 +175,27 @@ class WechatChannelAdapterTest {
     }
 
     @Test
+    void paymentQueryRecoversOnlyTheRequestedSuccessfulPayment() {
+        when(client.queryPayment("PAY1"))
+                .thenReturn(
+                        null,
+                        transaction(),
+                        new WechatTransaction(
+                                "OTHER",
+                                "TR1",
+                                "WX-1",
+                                "wx-app",
+                                "1900000001",
+                                "SUCCESS",
+                                "CNY",
+                                800));
+
+        assertNull(adapter.paymentQuery(payment, config));
+        assertEquals("WX-1", adapter.paymentQuery(payment, config).notifyId());
+        assertThrows(ServiceException.class, () -> adapter.paymentQuery(payment, config));
+    }
+
+    @Test
     void closeFollowsSdkConfirmation() {
         when(client.closeOrder("PAY1")).thenReturn(true);
         assertTrue(adapter.close(payment, config));

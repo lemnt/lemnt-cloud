@@ -86,7 +86,7 @@ class CommerceEndpointContractTest {
                             endpoint.method() + " " + endpoint.path(),
                             endpoint.owner() + " " + endpoint.permissions()));
         }
-        assertEquals(333, expected.size());
+        assertEquals(334, expected.size());
         assertEquals(expected, actual);
     }
 

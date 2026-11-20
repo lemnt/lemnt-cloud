@@ -4,11 +4,13 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.application.payment.service.RechargeService;
 import com.lemnt.pay.application.payment.service.WalletService;
 import com.lemnt.pay.domain.payment.gateway.RechargePackageGateway;
+import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.gateway.WalletRechargeGateway;
 import com.lemnt.pay.domain.payment.model.RechargePackage;
 import com.lemnt.pay.domain.payment.model.Wallet;
 import com.lemnt.pay.domain.payment.model.WalletBizType;
 import com.lemnt.pay.domain.payment.model.WalletRecharge;
+import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -27,7 +29,13 @@ class RechargeServiceTest {
     final RechargePackageGateway packages = mock(RechargePackageGateway.class);
     final WalletRechargeGateway recharges = mock(WalletRechargeGateway.class);
     final WalletService walletService = mock(WalletService.class);
-    final RechargeService service = new RechargeService(packages, recharges, walletService);
+    final RechargeService service =
+            new RechargeService(
+                    packages,
+                    recharges,
+                    walletService,
+                    mock(TradePaymentGateway.class),
+                    mock(PaymentRefundGateway.class));
     final LocalDateTime now = LocalDateTime.of(2026, 1, 1, 0, 0);
 
     private RechargePackage pkg(int status) {
@@ -80,6 +88,33 @@ class RechargeServiceTest {
         when(recharges.findByRequestNo("REQ1")).thenReturn(recharge("PENDING"));
         assertEquals(5L, service.create(1L, 1L, "REQ1").id());
         verify(recharges, times(1)).createIfAbsent(any());
+    }
+
+    @Test
+    void customAmountHasNoGiftAndCannotChangeAcrossRetries() {
+        when(walletService.getOrCreate(1L)).thenReturn(wallet());
+        when(recharges.createIfAbsent(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        var created = service.create(1L, null, new BigDecimal("12.30"), "CUSTOM");
+        assertNull(created.packageId());
+        assertEquals(new BigDecimal("12.30"), created.totalPrice());
+        assertEquals(new BigDecimal("0.00"), created.bonusPrice());
+        when(recharges.findByRequestNo("CUSTOM")).thenReturn(created);
+        assertEquals(created, service.create(1L, null, new BigDecimal("12.3"), "CUSTOM"));
+        assertThrows(
+                IllegalStateException.class,
+                () -> service.create(1L, null, new BigDecimal("12.31"), "CUSTOM"));
+        assertThrows(
+                IllegalStateException.class,
+                () -> service.create(2L, null, new BigDecimal("12.30"), "CUSTOM"));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.create(1L, 1L, new BigDecimal("12.30"), "CUSTOM"));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.create(1L, null, new BigDecimal("12.301"), "CUSTOM"));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.create(1L, null, new BigDecimal("21474836.48"), "CUSTOM"));
     }
 
     @Test

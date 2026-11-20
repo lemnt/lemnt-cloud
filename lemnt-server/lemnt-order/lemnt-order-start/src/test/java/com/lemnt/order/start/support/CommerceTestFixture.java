@@ -2,6 +2,7 @@ package com.lemnt.order.start.support;
 
 import com.lemnt.common.mybatis.handler.MyMetaObjectHandler;
 
+import com.baomidou.lock.LockTemplate;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
@@ -86,6 +87,7 @@ public final class CommerceTestFixture implements AutoCloseable {
     private RpcInterceptor interceptor = (type, method, args, call) -> call.call();
 
     public CommerceTestFixture() throws Exception {
+        register(LockTemplate.class, MemberLockTestSupport.create());
         for (String context : new String[]{"product", "promotion", "order", "pay"}) {
             var source = new JdbcDataSource();
             source.setURL(

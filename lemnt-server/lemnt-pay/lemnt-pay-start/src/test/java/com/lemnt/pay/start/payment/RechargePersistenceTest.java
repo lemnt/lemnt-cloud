@@ -55,7 +55,9 @@ class RechargePersistenceTest {
 
     @BeforeEach
     void setup() {
-        context = new AnnotationConfigApplicationContext(TestConfig.class);
+        context =
+                new AnnotationConfigApplicationContext(
+                        TestConfig.class, PaymentPersistenceDependencies.class);
         wallets = context.getBean(WalletGateway.class);
         packages = context.getBean(RechargePackageGateway.class);
         recharges = context.getBean(WalletRechargeGateway.class);
@@ -160,23 +162,30 @@ class RechargePersistenceTest {
     void trendUsesOriginalReceiptDateAndExactGrossAmount() {
         var wallet = wallets.createIfAbsent(1L);
         var sql = new JdbcTemplate(context.getBean(JdbcDataSource.class));
-        sql.update("""
+        sql.update(
+                """
                 INSERT INTO pay_payment(payment_no,order_no,channel,amount,status,paid_time) VALUES
                 ('P1','O1','ALIPAY',9007199254740993.01,'SUCCESS','2026-11-01 00:00:00'),
                 ('P2','O2','WECHAT',0.09,'SUCCESS','2026-11-01 23:59:59'),
                 ('P3','O3','ALIPAY',8.00,'WAITING',NULL),
                 ('P4','O4','ALIPAY',7.00,'SUCCESS',NULL),
-                ('P5','O5','ALIPAY',9.00,'SUCCESS','2026-11-04 00:00:00')
+                ('P5','O5','ALIPAY',9.00,'SUCCESS','2026-11-04 00:00:00'),
+                ('P6','R1','WECHAT',12.34,'SUCCESS','2026-11-01 18:00:00')
                 """);
-        sql.update("""
+        sql.update(
+                """
                 INSERT INTO pay_wallet_recharge
                     (recharge_no,request_no,wallet_id,member_id,pay_price,bonus_price,total_price,status,paid_time,refunded_time)
                 VALUES
-                ('R1','R1',?,1,12.34,1.00,13.34,'PAID','2026-11-01 18:00:00',NULL),
+                ('R1','R1',?,1,12.34,1.00,13.34,'REFUNDING','2026-11-01 18:00:00',NULL),
                 ('R2','R2',?,1,0.01,0.01,0.02,'REFUNDED','2026-11-02 15:00:00','2026-11-03 06:00:00'),
                 ('R3','R3',?,1,8.00,0.00,8.00,'PENDING',NULL,NULL),
                 ('R4','R4',?,1,9.00,0.00,9.00,'PAID',NULL,NULL)
-                """, wallet.id(), wallet.id(), wallet.id(), wallet.id());
+                """,
+                wallet.id(),
+                wallet.id(),
+                wallet.id(),
+                wallet.id());
         var trend = new PaymentTrendQueryExe(context.getBean(PaymentTrendGateway.class));
         var from = LocalDate.of(2026, 11, 1);
         var zero = new BigDecimal("0.00");

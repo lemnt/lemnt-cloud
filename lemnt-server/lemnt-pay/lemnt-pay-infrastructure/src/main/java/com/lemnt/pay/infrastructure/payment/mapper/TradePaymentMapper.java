@@ -18,6 +18,13 @@ public interface TradePaymentMapper extends BaseMapper<TradePaymentDO> {
      */
     int createWaiting(TradePaymentDO row);
 
+    TradePaymentDO findByPaymentNo(@Param("paymentNo") String paymentNo);
+
+    TradePaymentDO findPreferredAttempt(
+            @Param("orderNo") String orderNo, @Param("channel") String channel);
+
+    long databaseEpochSecond();
+
     TradePaymentDO lockByPaymentNo(@Param("paymentNo") String paymentNo);
 
     /**
@@ -29,10 +36,12 @@ public interface TradePaymentMapper extends BaseMapper<TradePaymentDO> {
      * 标记成功。
      */
     int markSuccess(
-        @Param("paymentNo") String paymentNo,
-        @Param("orderNo") String orderNo,
-        @Param("channel") String channel,
-        @Param("amount") BigDecimal amount,
-        @Param("channelTradeNo") String channelTradeNo,
-        @Param("notifyId") String notifyId);
+            @Param("paymentNo") String paymentNo,
+            @Param("orderNo") String orderNo,
+            @Param("channel") String channel,
+            @Param("amount") BigDecimal amount,
+            @Param("channelTradeNo") String channelTradeNo,
+            @Param("notifyId") String notifyId,
+            @Param("channelFeeRate") BigDecimal channelFeeRate,
+            @Param("channelFeeAmount") BigDecimal channelFeeAmount);
 }

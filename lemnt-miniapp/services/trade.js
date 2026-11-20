@@ -127,7 +127,7 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
         throw new Error('订单编号不合法');
       if (typeof input.appKey !== 'string' || !input.appKey.trim() || input.appKey.length > 64)
         throw new Error('支付应用不合法');
-      if (!['ALIPAY', 'WECHAT', 'SANDBOX'].includes(input.channel))
+      if (!['WECHAT', 'WALLET', 'SANDBOX'].includes(input.channel))
         throw new Error('支付渠道不合法');
       return call(
         '/orders/' + order(input.orderNo) + '/payment',
@@ -210,11 +210,38 @@ function createTradeClient({ request, baseUrl, getMemberToken, ready = false }) 
     rechargePackages: () => call('/recharge-packages', 'GET', undefined, 'trade'),
     createRecharge: (input) => {
       const packageId = input && input.packageId;
-      if (!Number.isSafeInteger(packageId) || packageId <= 0) throw new Error('套餐编号不合法');
+      const amount = input && typeof input.amount === 'string' ? input.amount.trim() : '';
+      if (packageId == null) {
+        if (!/^\d{1,9}(\.\d{1,2})?$/.test(amount) || !/[1-9]/.test(amount))
+          throw new Error('充值金额不合法');
+        const [yuan, fraction = ''] = amount.split('.');
+        const cents = Number(yuan) * 100 + Number(fraction.padEnd(2, '0'));
+        if (cents > 2147483647) throw new Error('充值金额超出微信支付允许范围');
+      } else {
+        if (!Number.isSafeInteger(packageId) || packageId <= 0) throw new Error('套餐编号不合法');
+        if (amount) throw new Error('请选择套餐或填写自定义金额');
+      }
       const requestNo = input && input.requestNo;
       if (typeof requestNo !== 'string' || !requestNo.trim() || requestNo.length > 64)
         throw new Error('请求编号不合法');
-      return call('/wallet/recharges', 'POST', { packageId, requestNo }, 'trade');
+      return call(
+        '/wallet/recharges',
+        'POST',
+        { ...(packageId == null ? { amount } : { packageId }), requestNo },
+        'trade',
+      );
+    },
+    rechargePrepay: (rechargeNo, appKey) => {
+      if (typeof rechargeNo !== 'string' || !/^RC[A-Z0-9]{4,38}$/.test(rechargeNo))
+        throw new Error('充值单编号不合法');
+      if (typeof appKey !== 'string' || !appKey.trim() || appKey.length > 64)
+        throw new Error('支付应用不合法');
+      return call(
+        '/wallet/recharges/' + encodeURIComponent(rechargeNo) + '/payment',
+        'POST',
+        { appKey },
+        'trade',
+      );
     },
     myRecharges: (input) => call('/wallet/recharges', 'GET', page(input), 'trade'),
 

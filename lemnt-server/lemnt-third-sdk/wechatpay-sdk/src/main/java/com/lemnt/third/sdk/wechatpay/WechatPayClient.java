@@ -1,7 +1,7 @@
 package com.lemnt.third.sdk.wechatpay;
 
 import com.lemnt.third.sdk.wechatpay.config.WechatPayConfig;
-import com.wechat.pay.java.core.RSAAutoCertificateConfig;
+import com.wechat.pay.java.core.RSAPublicKeyConfig;
 import com.wechat.pay.java.core.exception.ServiceException;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
@@ -26,13 +26,15 @@ public class WechatPayClient {
 
     private WechatPayClient(WechatPayConfig channelConfig) {
         channelConfig.requireValid();
-        RSAAutoCertificateConfig rsaConfig =
-            new RSAAutoCertificateConfig.Builder()
-                .merchantId(channelConfig.getMchId())
-                .privateKey(channelConfig.getPrivateKey())
-                .merchantSerialNumber(channelConfig.getSerialNo())
-                .apiV3Key(channelConfig.getApiV3key())
-                .build();
+        RSAPublicKeyConfig rsaConfig =
+                new RSAPublicKeyConfig.Builder()
+                        .merchantId(channelConfig.getMchId())
+                        .privateKey(channelConfig.getPrivateKey())
+                        .merchantSerialNumber(channelConfig.getSerialNo())
+                        .publicKey(channelConfig.getPublicKey())
+                        .publicKeyId(channelConfig.getPublicKeyId())
+                        .apiV3Key(channelConfig.getApiV3key())
+                        .build();
         this.channelConfig = channelConfig;
         this.notificationParser = new NotificationParser(rsaConfig);
         this.nativePayService = new NativePayService.Builder().config(rsaConfig).build();
@@ -41,7 +43,7 @@ public class WechatPayClient {
     }
 
     /**
-     * 创建客户端；官方 SDK 会在创建时下载并缓存微信支付平台证书，属于网络操作。
+     * 使用渠道配置中的微信支付公钥创建客户端，请求应答和回调共用验签配置。
      *
      * @param channelConfig 渠道配置
      * @return 客户端

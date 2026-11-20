@@ -1280,6 +1280,14 @@
     "sourceLine": 47
   },
   {
+    "method": "POST",
+    "path": "/trade/app/wallet/recharges/{rechargeNo}/payment",
+    "owner": "pay",
+    "permissions": "",
+    "source": "lemnt-server/lemnt-pay/lemnt-pay-adapter/src/main/java/com/lemnt/pay/adapter/app/recharge/AppRechargeController.java",
+    "sourceLine": 49
+  },
+  {
     "method": "GET",
     "path": "/trade/app/wallet/recharges",
     "owner": "pay",

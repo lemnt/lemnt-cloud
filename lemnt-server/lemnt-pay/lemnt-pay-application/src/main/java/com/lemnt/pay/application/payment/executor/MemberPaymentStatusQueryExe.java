@@ -37,6 +37,7 @@ public class MemberPaymentStatusQueryExe {
             return null;
         }
         var records = tradePaymentGateway.findByOrderNo(no);
+        var master = tradePaymentGateway.findPaymentOrder(no);
         long success = records.stream().filter(p -> "SUCCESS".equals(p.status())).count();
         boolean waiting = records.stream().anyMatch(p -> "WAITING".equals(p.status()));
         boolean paid =
@@ -66,11 +67,12 @@ public class MemberPaymentStatusQueryExe {
                             .contains(p.status()));
         String state;
         if (invalid
-            || success > 1
-            || (success == 1 && !paid)
-            || (paid && success != 1)
-            || ("CLOSED".equals(order.status()) && waiting)
-            || ("RESERVING".equals(order.status()) && !records.isEmpty())) {
+                || (master != null && "RECONCILE_REQUIRED".equals(master.status()))
+                || success > 1
+                || (success == 1 && !paid)
+                || (paid && success != 1)
+                || ("CLOSED".equals(order.status()) && waiting)
+                || ("RESERVING".equals(order.status()) && !records.isEmpty())) {
             state = "RECONCILE_REQUIRED";
         } else if (success == 1) {
             state = "SUCCESS";

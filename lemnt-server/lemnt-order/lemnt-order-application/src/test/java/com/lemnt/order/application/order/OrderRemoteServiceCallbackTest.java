@@ -77,6 +77,7 @@ class OrderRemoteServiceCallbackTest {
                         ? order("PENDING_PAYMENT")
                         : order("CLOSED"));
         Mockito.doThrow(new IllegalStateException("活动库存不足")).when(benefits).reserved("TR1");
+        Mockito.when(lifecycle.reservationCallbackFailed("TR1")).thenReturn(true);
         assertThrows(IllegalStateException.class, () -> service.reserve("TR1"));
         Mockito.verify(lifecycle).reservationCallbackFailed("TR1");
         Mockito.verify(benefits).closed("TR1");

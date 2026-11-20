@@ -9,7 +9,7 @@
     <select id="paidRechargeTotal" resultType="java.math.BigDecimal">
         SELECT COALESCE(SUM(pay_price), 0.00)
         FROM pay_wallet_recharge
-        WHERE status IN ('PAID', 'REFUNDED')
+        WHERE status IN ('PAID', 'REFUNDING', 'REFUNDED')
     </select>
 
     <select id="databaseNow" resultType="java.time.LocalDateTime">

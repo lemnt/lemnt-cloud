@@ -23,6 +23,11 @@ public class PaymentChannelGatewayImpl implements PaymentChannelGateway {
     private final PayChannelConfigResolver configs;
 
     @Override
+    public boolean supports(String channel) {
+        return channels.supports(channel);
+    }
+
+    @Override
     public VerifiedPaymentNotification query(PaymentRecord payment) {
         var config = configs.resolve(payment.appKey(), payment.channel());
         if (config == null) {

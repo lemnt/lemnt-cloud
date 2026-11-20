@@ -18,6 +18,9 @@ public interface PaymentChannelGateway {
     /** 查询原支付单的渠道成功事实。 */
     VerifiedPaymentNotification query(PaymentRecord payment);
 
+    /** 当前部署已装配的外部渠道。 */
+    boolean supports(String channel);
+
     /**
      * 验签并转换渠道通知；验签失败不得返回已核验对象。
      */

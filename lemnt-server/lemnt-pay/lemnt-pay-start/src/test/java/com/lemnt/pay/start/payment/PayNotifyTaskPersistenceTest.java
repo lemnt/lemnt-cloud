@@ -43,7 +43,7 @@ class PayNotifyTaskPersistenceTest {
 
     @BeforeEach
     void setup() {
-        context = new AnnotationConfigApplicationContext(TestConfig.class);
+        context = new AnnotationConfigApplicationContext(TestConfig.class, PaymentPersistenceDependencies.class);
         tasks = context.getBean(PayNotifyTaskGateway.class);
     }
 

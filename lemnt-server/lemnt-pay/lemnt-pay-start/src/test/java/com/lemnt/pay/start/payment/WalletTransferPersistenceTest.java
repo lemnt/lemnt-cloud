@@ -45,7 +45,7 @@ class WalletTransferPersistenceTest {
 
     @BeforeEach
     void setup() {
-        context = new AnnotationConfigApplicationContext(TestConfig.class);
+        context = new AnnotationConfigApplicationContext(TestConfig.class, PaymentPersistenceDependencies.class);
         wallets = context.getBean(WalletGateway.class);
         transfers = context.getBean(WalletTransferGateway.class);
     }

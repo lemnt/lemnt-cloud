@@ -6,6 +6,10 @@ export interface PaymentRecord {
   channel: string;
   channelTradeNo: string | null;
   amount: string;
+  paymentOrderNo?: string | null;
+  paymentOrderStatus?: string | null;
+  channelFeeRate?: string | null;
+  channelFeeAmount?: string | null;
   status: 'WAITING' | 'SUCCESS' | 'CLOSED';
 }
 export interface RefundRecord {
@@ -73,6 +77,14 @@ function payment(raw: unknown): PaymentRecord {
     channel: text(v.channel),
     channelTradeNo: optional(v.channelTradeNo),
     amount: money(v.amount),
+    ...('channelFeeRate' in v
+      ? { channelFeeRate: v.channelFeeRate == null ? null : money(v.channelFeeRate) }
+      : {}),
+    ...('channelFeeAmount' in v
+      ? { channelFeeAmount: v.channelFeeAmount == null ? null : money(v.channelFeeAmount) }
+      : {}),
+    ...('paymentOrderNo' in v ? { paymentOrderNo: optional(v.paymentOrderNo) } : {}),
+    ...('paymentOrderStatus' in v ? { paymentOrderStatus: optional(v.paymentOrderStatus) } : {}),
     status: v.status,
   };
 }

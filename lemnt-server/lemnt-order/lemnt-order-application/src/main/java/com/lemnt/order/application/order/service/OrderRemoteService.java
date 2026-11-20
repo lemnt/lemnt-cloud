@@ -71,8 +71,9 @@ public class OrderRemoteService {
             benefits.reserved(orderNo);
         } catch (RuntimeException exception) {
             var latest = orders.findByOrderNo(orderNo);
-            if (latest != null && "PENDING_PAYMENT".equals(latest.status())) {
-                lifecycle.reservationCallbackFailed(orderNo);
+            if (latest != null
+                    && "PENDING_PAYMENT".equals(latest.status())
+                    && lifecycle.reservationCallbackFailed(orderNo)) {
                 closed(orderNo);
             }
             throw exception;

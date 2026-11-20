@@ -1,17 +1,22 @@
 package com.lemnt.pay.start.event;
 
 import com.lemnt.common.client.event.CommerceEventEnvelope;
+import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.common.core.utils.JsonUtils;
 import com.lemnt.order.client.event.OrderClosedEvent;
 import com.lemnt.pay.application.event.service.OrderClosedEventHandler;
 import com.lemnt.pay.application.payment.executor.TradePaymentCreateCmdExe;
 import com.lemnt.pay.application.payment.service.PayNotifyDispatcher;
 import com.lemnt.pay.application.payment.service.PayNotifyTaskService;
+import com.lemnt.pay.application.payment.service.PaymentAttemptService;
 import com.lemnt.pay.application.payment.service.PaymentNotificationService;
 import com.lemnt.pay.application.payment.service.PaymentRecoveryService;
+import com.lemnt.pay.application.payment.service.RechargeService;
+import com.lemnt.pay.application.payment.service.WalletService;
 import com.lemnt.pay.application.paymentrefund.service.PaymentRefundService;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelCloseGateway;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
+import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 import com.lemnt.pay.domain.channel.model.PaymentChannelNotification;
 import com.lemnt.pay.domain.event.gateway.MessageInboxGateway;
 import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
@@ -23,6 +28,7 @@ import com.lemnt.pay.domain.payment.model.VerifiedPaymentNotification;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundGateway;
 import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
+import com.lemnt.pay.infrastructure.channel.support.PayChannelConfigResolver;
 import com.lemnt.pay.infrastructure.event.gateway.InboundEventGatewayImpl;
 import com.lemnt.pay.infrastructure.event.gateway.MessageInboxGatewayImpl;
 import com.lemnt.pay.infrastructure.event.mapper.MessageInboxMapper;
@@ -30,6 +36,7 @@ import com.lemnt.pay.infrastructure.payment.gateway.PayNotifyTaskGatewayImpl;
 import com.lemnt.pay.infrastructure.payment.gateway.TradePaymentGatewayImpl;
 import com.lemnt.pay.infrastructure.payment.mapper.PayNotifyLogMapper;
 import com.lemnt.pay.infrastructure.payment.mapper.PayNotifyTaskMapper;
+import com.lemnt.pay.infrastructure.payment.mapper.PaymentOrderMapper;
 import com.lemnt.pay.infrastructure.payment.mapper.TradePaymentMapper;
 import com.lemnt.pay.infrastructure.paymentrefund.gateway.PaymentRefundGatewayImpl;
 import com.lemnt.pay.infrastructure.paymentrefund.mapper.PaymentRefundMapper;
@@ -63,6 +70,7 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
     PaymentNotificationService notifications;
     PaymentRefundService refundService;
     PayNotifyTaskService tasks;
+    PayChannelConfigResolver channelConfigs;
 
     @BeforeEach
     void cashSetup() {
@@ -71,10 +79,14 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
             .thenReturn(
                 new OrderPaymentSnapshot(
                     "O1", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
+        channelConfigs = mock(PayChannelConfigResolver.class);
         payments =
-            proxy(
-                new TradePaymentGatewayImpl(session.getMapper(TradePaymentMapper.class)),
-                TradePaymentGateway.class);
+                proxy(
+                        new TradePaymentGatewayImpl(
+                                session.getMapper(TradePaymentMapper.class),
+                                session.getMapper(PaymentOrderMapper.class),
+                                channelConfigs),
+                        TradePaymentGateway.class);
         refunds =
             proxy(
                 new PaymentRefundGatewayImpl(session.getMapper(PaymentRefundMapper.class)),
@@ -88,13 +100,20 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
                         event -> {});
         notifications =
                 proxy(
-                        new PaymentNotificationService(orders, payments, tasks),
+                        new PaymentNotificationService(
+                                orders, payments, tasks, mock(RechargeService.class)),
                         PaymentNotificationService.class);
         refundService =
                 proxy(
-                        new PaymentRefundService(orders, payments, refunds, tasks),
+                        new PaymentRefundService(
+                                orders,
+                                payments,
+                                refunds,
+                                tasks,
+                                mock(WalletService.class),
+                                mock(RechargeService.class)),
                         PaymentRefundService.class);
-        payments.createWaiting("P1", "O1", 9L, "SANDBOX", "app", new BigDecimal("10.00"));
+        payments.createWaiting("P1", "O1", 7L, "SANDBOX", "app", new BigDecimal("10.00"));
     }
 
     VerifiedPaymentNotification notice(String channelNo) {
@@ -122,6 +141,28 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
             jdbc.queryForObject(
                 "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME IN ('ORDER_INFO','ORDER_AFTER_SALE','TRADE_ORDER')",
                 Integer.class));
+    }
+
+    @Test
+    void successfulPaymentKeepsFeeSnapshotAfterConfigChanges() {
+        jdbc.update("UPDATE pay_payment SET channel='WECHAT' WHERE payment_no='P1'");
+        when(channelConfigs.resolve("app", "WECHAT"))
+                .thenReturn(
+                        new PayChannelConfig(
+                                1L, 1L, "WECHAT", 0, new BigDecimal("2.55"), null, null, null));
+        var notice =
+                new VerifiedPaymentNotification(
+                        "P1", "O1", "WECHAT", "FEE-PAY", new BigDecimal("10.00"), "FEE-NOTICE");
+        notifications.execute(notice);
+        when(channelConfigs.resolve("app", "WECHAT"))
+                .thenReturn(
+                        new PayChannelConfig(
+                                1L, 1L, "WECHAT", 0, new BigDecimal("8.00"), null, null, null));
+        notifications.execute(notice);
+        var saved = payments.findByPaymentNo("P1");
+        assertEquals(new BigDecimal("2.55"), saved.channelFeeRate());
+        assertEquals(new BigDecimal("0.26"), saved.channelFeeAmount());
+        verify(channelConfigs).resolve("app", "WECHAT");
     }
 
     @Test
@@ -178,7 +219,10 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
             context.refresh();
             var service =
                     new PaymentNotificationService(
-                            orders, payments, context.getBean(PayNotifyTaskService.class));
+                            orders,
+                            payments,
+                            context.getBean(PayNotifyTaskService.class),
+                            mock(RechargeService.class));
             transaction.executeWithoutResult(
                     status -> {
                         service.execute(notice("CH1"));
@@ -207,8 +251,15 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
     void paymentQueryRecoversMissingCallbackAndReplayKeepsOneTask() {
         jdbc.update("UPDATE pay_payment SET channel='WECHAT' WHERE payment_no='P1'");
         var channels = mock(PaymentChannelGateway.class);
-        var recovery = new PaymentRecoveryService(
-            payments, refunds, channels, mock(PaymentRefundChannelGateway.class), notifications, refundService);
+        var recovery =
+                new PaymentRecoveryService(
+                        payments,
+                        refunds,
+                        channels,
+                        mock(PaymentRefundChannelGateway.class),
+                        notifications,
+                        refundService,
+                        mock(PaymentAttemptService.class));
         var result = new VerifiedPaymentNotification(
             "P1", "O1", "WECHAT", "CH1", new BigDecimal("10.00"), "CH1");
         when(channels.query(any())).thenReturn(null, result);
@@ -223,6 +274,124 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
     }
 
     /** 定时查询只读取原单，回调校验原应用并复用已建立的退款任务。 */
+    /** 到期查单失败和渠道关闭失败都保留原尝试，关闭确认后才分配新单号。 */
+    @Test
+    void expiredWechatAttemptCanRetryOnlyAfterConfirmedClose() {
+        var inbox =
+                proxy(
+                        new MessageInboxGatewayImpl(session.getMapper(MessageInboxMapper.class)),
+                        MessageInboxGateway.class);
+        var create =
+                proxy(
+                        new TradePaymentCreateCmdExe(orders, payments, inbox),
+                        TradePaymentCreateCmdExe.class);
+        when(orders.preparePayment("O1"))
+                .thenReturn(
+                        new OrderPaymentSnapshot(
+                                "O1", 7L, new BigDecimal("10.00"), "PENDING_PAYMENT"));
+        var first = create.execute("O1", "WECHAT", "app");
+        var master = payments.findPaymentOrder("O1");
+        assertEquals("WAITING", master.status());
+        assertTrue(first.expiresAtEpochSecond() > payments.databaseEpochSecond());
+        jdbc.update(
+                "UPDATE pay_payment SET expires_at_epoch_second=1 WHERE payment_no=?",
+                first.paymentNo());
+        var channels = mock(PaymentChannelGateway.class);
+        var close = mock(PaymentChannelCloseGateway.class);
+        var attempts =
+                proxy(
+                        new PaymentAttemptService(payments, channels, close),
+                        PaymentAttemptService.class);
+        var recovery =
+                new PaymentRecoveryService(
+                        payments,
+                        refunds,
+                        channels,
+                        mock(PaymentRefundChannelGateway.class),
+                        notifications,
+                        refundService,
+                        attempts);
+        when(channels.query(any())).thenThrow(new IllegalStateException("查询超时")).thenReturn(null);
+        when(close.closeUnpaid(any())).thenReturn(false, true);
+        recovery.expirePayments();
+        verifyNoInteractions(close);
+        assertEquals(first.paymentNo(), create.execute("O1", "WECHAT", "app").paymentNo());
+        recovery.expirePayments();
+        assertEquals("WAITING", payments.findByPaymentNo(first.paymentNo()).status());
+        assertThrows(ServiceException.class, () -> attempts.prepay(first, null, null));
+        recovery.expirePayments();
+        assertEquals("CLOSED", payments.findByPaymentNo(first.paymentNo()).status());
+        var second = create.execute("O1", "WECHAT", "app");
+        assertNotEquals(first.paymentNo(), second.paymentNo());
+        assertEquals(master, payments.findPaymentOrder("O1"));
+        assertEquals(second.paymentNo(), create.execute("O1", "WECHAT", "app").paymentNo());
+        assertEquals(
+                2,
+                jdbc.queryForObject(
+                        "SELECT COUNT(*) FROM pay_payment WHERE order_no='O1' AND channel='WECHAT'",
+                        Integer.class));
+    }
+
+    /** 已收款的到期尝试补记资金状态，跳过渠道关单。 */
+    @Test
+    void expiredWechatAttemptWithFundsReceivedIsConfirmedInsteadOfClosed() {
+        var first =
+                payments.createWaiting("P2", "O1", 7L, "WECHAT", "app", new BigDecimal("10.00"));
+        jdbc.update(
+                "UPDATE pay_payment SET expires_at_epoch_second=1 WHERE payment_no=?",
+                first.paymentNo());
+        var channels = mock(PaymentChannelGateway.class);
+        when(channels.query(any()))
+                .thenReturn(
+                        new VerifiedPaymentNotification(
+                                "P2", "O1", "WECHAT", "TX-P2", new BigDecimal("10.00"), "TX-P2"));
+        var attempts = mock(PaymentAttemptService.class);
+        var recovery =
+                new PaymentRecoveryService(
+                        payments,
+                        refunds,
+                        channels,
+                        mock(PaymentRefundChannelGateway.class),
+                        notifications,
+                        refundService,
+                        attempts);
+        recovery.expirePayments();
+        assertEquals("SUCCESS", payments.findByPaymentNo("P2").status());
+        verifyNoInteractions(attempts);
+        assertEquals("SUCCESS", payments.findPaymentOrder("O1").status());
+        assertEquals("P2", payments.findPaymentOrder("O1").paidPaymentNo());
+    }
+
+    /** 真实第二笔收款须入库，同时主单保留原成功引用并进入待对账。 */
+    @Test
+    void secondVerifiedPaymentLeavesBothFundsAndFlagsMasterForReconciliation() {
+        var second =
+                payments.createWaiting("P2", "O1", 7L, "WECHAT", "app", new BigDecimal("10.00"));
+        var masterNo = payments.findPaymentOrder("O1").paymentOrderNo();
+        notifications.execute(notice("ORIGINAL"));
+        notifications.execute(
+                new VerifiedPaymentNotification(
+                        second.paymentNo(),
+                        "O1",
+                        "WECHAT",
+                        "CHANNEL-SECOND",
+                        new BigDecimal("10.00"),
+                        "CHANNEL-SECOND"));
+        assertEquals("SUCCESS", payments.findByPaymentNo("P1").status());
+        assertEquals("SUCCESS", payments.findByPaymentNo("P2").status());
+        var master = payments.findPaymentOrder("O1");
+        assertEquals(masterNo, master.paymentOrderNo());
+        assertEquals("P1", master.paidPaymentNo());
+        assertEquals("RECONCILE_REQUIRED", master.status());
+        tasks.processDue(10);
+        verify(orders, never()).notifyPaid(any(), any());
+        assertThrows(
+                IllegalStateException.class,
+                () ->
+                        payments.createWaiting(
+                                "P3", "O1", 7L, "WECHAT", "app", new BigDecimal("10.00")));
+    }
+
     @Test
     void refundQueryAndCallbackRecoverWithoutResubmission() {
         jdbc.update("UPDATE pay_payment SET channel='WECHAT' WHERE payment_no='P1'");
@@ -231,8 +400,15 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
         plan("AF1", "3.32", "REFUNDING");
         var refund = refundService.prepare("AF1");
         var channels = mock(PaymentRefundChannelGateway.class);
-        var recovery = new PaymentRecoveryService(
-            payments, refunds, mock(PaymentChannelGateway.class), channels, notifications, refundService);
+        var recovery =
+                new PaymentRecoveryService(
+                        payments,
+                        refunds,
+                        mock(PaymentChannelGateway.class),
+                        channels,
+                        notifications,
+                        refundService,
+                        mock(PaymentAttemptService.class));
         var result = new PaymentRefundResult(
             refund.refundNo(), "P1", "WECHAT", new BigDecimal("3.32"), "SUCCESS", "RCH1");
         when(channels.query(any(), any())).thenReturn(null, result);
@@ -257,6 +433,7 @@ class CashPaymentPersistenceTest extends PayDatabaseFixture {
             .thenReturn(new OrderPaymentSnapshot("O1", 7L, new BigDecimal("10.00"), "CLOSED"));
         notifications.execute(notice("CH1"));
         assertEquals("SUCCESS", payments.findByPaymentNo("P1").status());
+        assertEquals("RECONCILE_REQUIRED", payments.findPaymentOrder("O1").status());
         assertEquals(1, jdbc.queryForObject("SELECT COUNT(*) FROM pay_notify_task", Integer.class));
     }
 

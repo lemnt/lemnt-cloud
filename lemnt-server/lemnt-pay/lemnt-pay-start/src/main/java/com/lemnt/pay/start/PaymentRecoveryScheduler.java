@@ -21,6 +21,12 @@ public class PaymentRecoveryScheduler {
         service.syncPayments();
     }
 
+    /** 处理到期的微信支付尝试。 */
+    @Scheduled(fixedDelayString = "${lemnt.trade.payment-recovery.delay-ms:60000}")
+    public void expirePayments() {
+        service.expirePayments();
+    }
+
     /** 查询渠道仍待确认的原退款单。 */
     @Scheduled(fixedDelayString = "${lemnt.trade.payment-recovery.delay-ms:60000}")
     public void syncRefunds() {

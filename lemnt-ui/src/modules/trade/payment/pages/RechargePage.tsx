@@ -13,7 +13,12 @@ import { usePermission } from '@/shared/hooks/usePermission';
 import * as api from '../api/rechargeApi';
 
 const statusEnum = { 0: '启用', 1: '停用' } as const;
-const rechargeStatusEnum = { PENDING: '待支付', PAID: '已到账', REFUNDED: '已退款' } as const;
+const rechargeStatusEnum = {
+  PENDING: '待支付',
+  PAID: '已到账',
+  REFUNDING: '退款中',
+  REFUNDED: '已退款',
+} as const;
 
 /** 充值套餐管理。 */
 export function RechargePackagePage() {
@@ -204,7 +209,7 @@ export function RechargePackagePage() {
   );
 }
 
-/** 充值单：确认到账代替真实渠道回调，退款按到账金额出账。 */
+/** 充值单：查看充值、确认历史单及管理原路退款。 */
 export function WalletRechargePage() {
   const { can } = usePermission(),
     { message } = App.useApp(),
@@ -258,7 +263,7 @@ export function WalletRechargePage() {
               详情
             </Button>
           )}
-          {can(prefix + ':confirm') && row.status === 'PENDING' && (
+          {can(prefix + ':confirm') && row.status === 'PENDING' && row.channelCode !== 'WECHAT' && (
             <Popconfirm
               title="确认该充值单已到账？"
               onConfirm={async () => {
@@ -277,14 +282,16 @@ export function WalletRechargePage() {
               </Button>
             </Popconfirm>
           )}
-          {can(prefix + ':refund') && row.status === 'PAID' && (
+          {can(prefix + ':refund') && (row.status === 'PAID' || row.status === 'REFUNDING') && (
             <Popconfirm
               title="确认退款并从钱包扣回到账金额？"
               onConfirm={async () => {
                 if (refund.isPending) return;
                 try {
-                  await refund.mutateAsync(row.rechargeNo);
-                  message.success('已退款');
+                  const result = await refund.mutateAsync(row.rechargeNo);
+                  if (result.status === 'REFUNDED') message.success('已退款');
+                  else if (result.status === 'REFUNDING') message.info('退款处理中');
+                  else message.warning('微信退款未成功，已释放冻结余额');
                   await refresh();
                 } catch (e) {
                   message.error(String(e));
@@ -292,7 +299,7 @@ export function WalletRechargePage() {
               }}
             >
               <Button type="link" danger disabled={refund.isPending}>
-                退款
+                {row.status === 'REFUNDING' ? '查询或重试退款' : '退款'}
               </Button>
             </Popconfirm>
           )}
@@ -337,7 +344,10 @@ export function WalletRechargePage() {
           setFilters({
             memberId: typeof v.memberId === 'string' ? v.memberId : undefined,
             status:
-              v.status === 'PENDING' || v.status === 'PAID' || v.status === 'REFUNDED'
+              v.status === 'PENDING' ||
+              v.status === 'PAID' ||
+              v.status === 'REFUNDING' ||
+              v.status === 'REFUNDED'
                 ? v.status
                 : undefined,
           });

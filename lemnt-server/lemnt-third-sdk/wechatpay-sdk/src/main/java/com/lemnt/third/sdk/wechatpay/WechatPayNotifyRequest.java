@@ -3,15 +3,15 @@ package com.lemnt.third.sdk.wechatpay;
 import java.util.Map;
 
 /**
- * 微信支付回调的验签头与报文原文。字段缺失时直接失败，不进入验签。
+ * 微信支付回调的验签头与报文原文。签名类型可省略，由官方 SDK 使用默认 RSA 类型。
  */
 public record WechatPayNotifyRequest(
-    String serialNumber,
-    String signature,
-    String timestamp,
-    String nonce,
-    String signType,
-    String body) {
+        String serialNumber,
+        String signature,
+        String timestamp,
+        String nonce,
+        String signType,
+        String body) {
 
     private static final String HEADER_SERIAL = "Wechatpay-Serial";
     private static final String HEADER_SIGNATURE = "Wechatpay-Signature";
@@ -24,7 +24,6 @@ public record WechatPayNotifyRequest(
         requireText(signature, HEADER_SIGNATURE);
         requireText(timestamp, HEADER_TIMESTAMP);
         requireText(nonce, HEADER_NONCE);
-        requireText(signType, HEADER_SIGN_TYPE);
         requireText(body, "通知报文");
     }
 

@@ -4,6 +4,7 @@ import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.application.payment.dto.PaymentChannelDTO;
 import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
 import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
+import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.channel.model.PaymentChannel;
 
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import java.util.List;
 public class MemberPaymentChannelQueryExe {
     private final PayAppGateway apps;
     private final PayChannelConfigGateway channels;
+    private final PaymentChannelGateway gateway;
 
     public List<PaymentChannelDTO> execute(String appKey) {
         if (appKey == null || appKey.isBlank() || appKey.length() > 64) {
@@ -43,6 +45,10 @@ public class MemberPaymentChannelQueryExe {
     private PaymentChannelDTO channel(String code) {
         try {
             var channel = PaymentChannel.valueOf(code);
+            if (channel == PaymentChannel.ALIPAY
+                    || (channel != PaymentChannel.WALLET && !gateway.supports(channel.name()))) {
+                return null;
+            }
             return new PaymentChannelDTO(channel.name(), channel.displayName());
         } catch (IllegalArgumentException | NullPointerException exception) {
             return null;

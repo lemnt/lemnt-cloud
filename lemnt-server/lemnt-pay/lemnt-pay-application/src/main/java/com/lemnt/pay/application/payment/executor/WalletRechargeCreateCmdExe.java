@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 会员按套餐创建充值单。
+ * 会员按套餐或自定义金额创建充值单。
  */
 @Component
 @RequiredArgsConstructor
@@ -22,6 +22,6 @@ public class WalletRechargeCreateCmdExe {
             throw new IllegalArgumentException("充值参数不合法");
         }
         return RechargeDTOConverter.recharge(
-            service.create(memberId, cmd.packageId(), cmd.requestNo()));
+                service.create(memberId, cmd.packageId(), cmd.amount(), cmd.requestNo()));
     }
 }

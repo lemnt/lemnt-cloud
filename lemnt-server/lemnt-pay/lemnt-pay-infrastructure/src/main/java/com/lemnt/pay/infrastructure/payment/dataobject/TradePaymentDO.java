@@ -31,7 +31,11 @@ public class TradePaymentDO extends BaseDO {
     private String appKey;
     private String channelTradeNo;
     private BigDecimal amount;
+    private BigDecimal channelFeeRate;
+    private BigDecimal channelFeeAmount;
     private String status;
     private LocalDateTime paidTime;
     private String notifyId;
+    private Integer attemptNo;
+    private Long expiresAtEpochSecond;
 }

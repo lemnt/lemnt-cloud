@@ -86,7 +86,7 @@ class ServiceRouteConfigurationTest {
     @TestFactory
     Stream<DynamicTest> allOriginalEndpointsReachExactlyOneOwner() throws Exception {
         var endpoints = endpoints();
-        assertEquals(333, endpoints.size());
+        assertEquals(334, endpoints.size());
         return endpoints.stream()
                 .map(
                         endpoint ->

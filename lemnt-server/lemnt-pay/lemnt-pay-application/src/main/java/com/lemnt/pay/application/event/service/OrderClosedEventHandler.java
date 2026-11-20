@@ -59,11 +59,14 @@ public class OrderClosedEventHandler {
             || !order.memberId().equals(event.memberId())) {
             throw new IllegalStateException("原订单尚未关闭或归属不一致");
         }
+        payments.closePaymentOrder(event.orderNo());
         for (var payment : payments.findByOrderNo(event.orderNo())) {
-            if ("WAITING".equals(payment.status())) {
-                if (!channels.closeUnpaid(payment))
+            if (!"WAITING".equals(payment.status())) continue;
+            var current = payments.lockByPaymentNo(payment.paymentNo());
+            if (current != null && "WAITING".equals(current.status())) {
+                if (!channels.closeUnpaid(current))
                     throw new IllegalStateException("渠道未确认关闭原支付尝试，请重试核对");
-                payments.markClosed(payment.paymentNo());
+                payments.markClosed(current.paymentNo());
             }
         }
     }

@@ -18,7 +18,8 @@ public class PaymentChannelListQueryExe {
      */
     public List<PaymentChannelDTO> execute() {
         return Arrays.stream(PaymentChannel.values())
-            .map(channel -> new PaymentChannelDTO(channel.name(), channel.displayName()))
-            .toList();
+                .filter(PaymentChannel::storefront)
+                .map(channel -> new PaymentChannelDTO(channel.name(), channel.displayName()))
+                .toList();
     }
 }

@@ -3,9 +3,11 @@ package com.lemnt.pay.application.paymentrefund.executor;
 import com.lemnt.pay.application.paymentrefund.converter.PaymentRefundDTOConverter;
 import com.lemnt.pay.application.paymentrefund.dto.PaymentRefundDTO;
 import com.lemnt.pay.application.paymentrefund.service.PaymentRefundService;
+import com.lemnt.pay.domain.channel.model.PaymentChannel;
 import com.lemnt.pay.domain.payment.gateway.TradePaymentGateway;
 import com.lemnt.pay.domain.payment.model.PaymentOperator;
 import com.lemnt.pay.domain.paymentrefund.gateway.PaymentRefundChannelGateway;
+import com.lemnt.pay.domain.paymentrefund.model.PaymentRefundResult;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -53,7 +55,18 @@ public class PaymentRefundCreateCmdExe {
             || payment.amount().compareTo(refund.amount()) < 0) {
             throw new IllegalStateException("原支付单与退款交易不一致，请先对账");
         }
-        var result = service.complete(refund, channels.refund(refund, payment));
+        var result =
+                service.complete(
+                        refund,
+                        PaymentChannel.WALLET.name().equals(refund.channel())
+                                ? new PaymentRefundResult(
+                                        refund.refundNo(),
+                                        refund.paymentNo(),
+                                        refund.channel(),
+                                        refund.amount(),
+                                        "SUCCESS",
+                                        refund.refundNo())
+                                : channels.refund(refund, payment));
         return PaymentRefundDTOConverter.toDTO(result);
     }
 }

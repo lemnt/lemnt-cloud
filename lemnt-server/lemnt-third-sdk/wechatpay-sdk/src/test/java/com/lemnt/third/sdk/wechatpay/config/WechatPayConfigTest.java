@@ -26,6 +26,22 @@ class WechatPayConfigTest {
     }
 
     @Test
+    void requireValidRejectsMissingPublicKeyOrId() {
+        var missingKey = config();
+        missingKey.setPublicKey(null);
+        assertTrue(
+                assertThrows(IllegalArgumentException.class, missingKey::requireValid)
+                        .getMessage()
+                        .contains("publicKey"));
+        var missingId = config();
+        missingId.setPublicKeyId(" ");
+        assertTrue(
+                assertThrows(IllegalArgumentException.class, missingId::requireValid)
+                        .getMessage()
+                        .contains("publicKeyId"));
+    }
+
+    @Test
     void requireValidRejectsMissingApiV3Key() {
         WechatPayConfig config = config();
         config.setApiV3key(" ");
@@ -50,6 +66,8 @@ class WechatPayConfigTest {
         config.setSerialNo("SERIAL-1");
         config.setApiV3key("0123456789abcdef0123456789abcdef");
         config.setPrivateKey("-----BEGIN PRIVATE KEY-----");
+        config.setPublicKey("-----BEGIN PUBLIC KEY-----");
+        config.setPublicKeyId("PUB_KEY_ID_TEST");
         return config;
     }
 }

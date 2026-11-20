@@ -3,14 +3,16 @@ package com.lemnt.pay.application.payment.executor;
 import com.lemnt.common.core.exception.ServiceException;
 import com.lemnt.pay.application.payment.cmd.PaymentPrepayCmd;
 import com.lemnt.pay.application.payment.dto.PaymentPrepayDTO;
-import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
+import com.lemnt.pay.application.payment.service.PaymentAttemptService;
+import com.lemnt.pay.application.payment.service.WalletOrderPaymentService;
 import com.lemnt.pay.domain.channel.gateway.PayAppGateway;
 import com.lemnt.pay.domain.channel.gateway.PayChannelConfigGateway;
-import com.lemnt.pay.domain.payment.gateway.PayerOpenIdGateway;
 import com.lemnt.pay.domain.channel.gateway.PaymentChannelGateway;
 import com.lemnt.pay.domain.channel.model.PayApp;
 import com.lemnt.pay.domain.channel.model.PayChannelConfig;
 import com.lemnt.pay.domain.channel.model.PaymentChannel;
+import com.lemnt.pay.domain.order.gateway.OrderPaymentGateway;
+import com.lemnt.pay.domain.payment.gateway.PayerOpenIdGateway;
 import com.lemnt.pay.domain.payment.model.PaymentPrepay;
 import com.lemnt.pay.domain.payment.model.PaymentRecord;
 
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * 会员发起订单支付：校验订单归属后创建待支付单，再交由渠道生成预支付参数。
@@ -32,6 +35,8 @@ public class PaymentPrepayCmdExe {
     private final TradePaymentCreateCmdExe payments;
     private final PaymentChannelGateway channelGateway;
     private final PayerOpenIdGateway payerOpenIds;
+    private final WalletOrderPaymentService wallet;
+    private final PaymentAttemptService attempts;
 
     public PaymentPrepayDTO execute(PaymentPrepayCmd cmd) {
         require(cmd != null && cmd.memberId() != null && cmd.memberId() > 0, "会员编号不合法");
@@ -42,11 +47,13 @@ public class PaymentPrepayCmdExe {
             cmd.appKey() != null && !cmd.appKey().isBlank() && cmd.appKey().length() <= 64,
             "支付应用不能为空");
         String channel = channel(cmd.channel());
+        boolean walletChannel = PaymentChannel.WALLET.name().equals(channel);
+        require(!PaymentChannel.ALIPAY.name().equals(channel), "暂不支持该支付渠道");
         var order = orders.findByOrderNo(cmd.orderNo());
         if (order == null || !cmd.memberId().equals(order.memberId())) {
             throw new ServiceException("订单不存在", 400);
         }
-        require("PENDING_PAYMENT".equals(order.status()), "只有待支付订单可以发起支付");
+        require(walletChannel || "PENDING_PAYMENT".equals(order.status()), "只有待支付订单可以发起支付");
         require(order.totalAmount() != null && order.totalAmount().signum() > 0, "订单无需支付");
         PayApp app = apps.findByAppKey(cmd.appKey());
         require(app != null && Integer.valueOf(0).equals(app.status()), "支付应用不存在或已停用");
@@ -58,11 +65,24 @@ public class PaymentPrepayCmdExe {
                             && Integer.valueOf(0).equals(value.status()))
                 .findFirst()
                 .orElseThrow(() -> new ServiceException("支付渠道未启用", 400));
+        if (walletChannel) {
+            var payment = wallet.pay(order.orderNo(), cmd.memberId(), app.appKey());
+            return new PaymentPrepayDTO(
+                    payment.paymentNo(),
+                    order.orderNo(),
+                    channel,
+                    payment.amount(),
+                    null,
+                    Map.of());
+        }
+        require(channelGateway.supports(channel), "暂不支持该支付渠道");
         PaymentRecord payment = payments.execute(order.orderNo(), channel, app.appKey());
         require(payment.appKey() == null || app.appKey().equals(payment.appKey()), "支付单已绑定其他应用");
         require("WAITING".equals(payment.status()), "支付单已关闭或已支付");
         PaymentPrepay prepay =
-            channelGateway.prepay(payment, config, payerOpenId(channel, cmd.memberId()));
+                PaymentChannel.WECHAT.name().equals(channel)
+                        ? attempts.prepay(payment, config, payerOpenId(channel, cmd.memberId()))
+                        : channelGateway.prepay(payment, config, null);
         return new PaymentPrepayDTO(
             prepay.paymentNo(),
             order.orderNo(),

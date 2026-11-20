@@ -1,5 +1,20 @@
 -- 支付服务初始化，仅用于空库。订单与售后归属通过可信RPC核实。
 
+CREATE TABLE IF NOT EXISTS pay_payment_order (
+    order_no VARCHAR(40) NOT NULL COMMENT '商城或钱包充值原业务单号',
+    payment_order_no VARCHAR(40) NOT NULL COMMENT '支付主单编号',
+    member_id BIGINT NULL COMMENT '原会员编号，历史缺失留空',
+    amount DECIMAL(19,2) NULL COMMENT '支付应付金额，单位元，历史不一致留空',
+    status VARCHAR(24) NOT NULL DEFAULT 'WAITING' COMMENT 'WAITING待支付、SUCCESS已收款、CLOSED业务已关闭、RECONCILE_REQUIRED待对账',
+    paid_payment_no VARCHAR(40) NULL COMMENT '首次确认成功的渠道尝试支付编号',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY(order_no),
+    UNIQUE KEY uk_pay_payment_order_no(payment_order_no),
+    CONSTRAINT chk_pay_payment_order_status CHECK(status IN ('WAITING','SUCCESS','CLOSED','RECONCILE_REQUIRED')),
+    CONSTRAINT chk_pay_payment_order_amount CHECK(amount IS NULL OR amount>0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付主单';
+
 CREATE TABLE IF NOT EXISTS pay_payment (
     id BIGINT NOT NULL AUTO_INCREMENT COMMENT '主键编号',
     payment_no VARCHAR(40) NOT NULL COMMENT '支付业务单号',
@@ -9,16 +24,21 @@ CREATE TABLE IF NOT EXISTS pay_payment (
     app_key VARCHAR(64) NULL COMMENT '支付应用标识',
     channel_trade_no VARCHAR(128) NULL COMMENT '渠道支付流水号',
     amount DECIMAL(19,2) NOT NULL COMMENT '业务金额，单位元',
+    channel_fee_rate DECIMAL(6,2) NULL COMMENT '支付成功时渠道费率，百分比',
+    channel_fee_amount DECIMAL(19,2) NULL COMMENT '按费率计算的渠道手续费，单位元',
     status VARCHAR(20) NOT NULL DEFAULT 'WAITING' COMMENT '支付状态：WAITING待支付、SUCCESS支付成功、CLOSED已关闭',
     paid_time DATETIME NULL COMMENT '渠道支付成功时间，仅状态迁移为SUCCESS时写入，对账基准',
     notify_id VARCHAR(128) NULL COMMENT '支付通知唯一标识',
+    attempt_no INT NOT NULL DEFAULT 1 COMMENT '同一业务单和渠道的支付尝试序号',
+    expires_at_epoch_second BIGINT NULL COMMENT '尝试到期时间，Unix秒，历史记录为空',
     create_by VARCHAR(64) NULL COMMENT '创建人',
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     update_by VARCHAR(64) NULL COMMENT '修改人',
     update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
     PRIMARY KEY(id),
     UNIQUE KEY uk_trade_payment_no(payment_no),
-    UNIQUE KEY uk_trade_payment_order_channel(order_no,channel),
+    UNIQUE KEY uk_trade_payment_order_attempt(order_no,channel,attempt_no),
+    KEY idx_pay_payment_expiry(channel,status,expires_at_epoch_second),
     UNIQUE KEY uk_trade_payment_notify(notify_id),
     KEY idx_trade_payment_status(status,create_time),
     KEY idx_trade_payment_app(app_key,channel),
@@ -168,7 +188,7 @@ CREATE TABLE IF NOT EXISTS pay_wallet_recharge (
     pay_price DECIMAL(19,2) NOT NULL COMMENT '实付金额，单位元',
     bonus_price DECIMAL(19,2) NOT NULL DEFAULT 0 COMMENT '充值赠送金额，单位元',
     total_price DECIMAL(19,2) NOT NULL COMMENT '实付与赠送合计入账金额，单位元',
-    status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT '充值状态：PENDING待支付、PAID已到账、REFUNDED已退款',
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING' COMMENT '充值状态：PENDING待支付、PAID已到账、REFUNDING退款中、REFUNDED已退款',
     channel_code VARCHAR(32) NULL COMMENT '支付渠道编码',
     paid_time DATETIME NULL COMMENT '支付到账时间',
     refunded_time DATETIME NULL COMMENT '退款完成时间',

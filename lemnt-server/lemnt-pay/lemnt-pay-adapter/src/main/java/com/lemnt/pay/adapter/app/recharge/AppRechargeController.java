@@ -2,6 +2,8 @@ package com.lemnt.pay.adapter.app.recharge;
 
 import com.lemnt.common.core.domain.R;
 import com.lemnt.common.security.utils.SecurityUtils;
+import com.lemnt.pay.adapter.app.payment.converter.MemberPaymentStatusConverter;
+import com.lemnt.pay.adapter.app.payment.res.AppPaymentPrepayRes;
 import com.lemnt.pay.adapter.app.recharge.req.AppRechargeCreateReq;
 import com.lemnt.pay.adapter.app.recharge.req.AppRechargePageReq;
 import com.lemnt.pay.adapter.web.recharge.converter.RechargeResConverter;
@@ -11,11 +13,13 @@ import com.lemnt.pay.application.payment.cmd.WalletRechargeCreateCmd;
 import com.lemnt.pay.application.payment.executor.MemberWalletRechargePageQueryExe;
 import com.lemnt.pay.application.payment.executor.RechargePackageEnabledListQueryExe;
 import com.lemnt.pay.application.payment.executor.WalletRechargeCreateCmdExe;
+import com.lemnt.pay.application.payment.executor.WalletRechargePrepayCmdExe;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.validation.Valid;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -38,6 +43,19 @@ public class AppRechargeController {
     private final RechargePackageEnabledListQueryExe packages;
     private final WalletRechargeCreateCmdExe create;
     private final MemberWalletRechargePageQueryExe recharges;
+    private final WalletRechargePrepayCmdExe prepay;
+
+    /** 发起本人充值单微信支付。 */
+    @PostMapping("/wallet/recharges/{rechargeNo}/payment")
+    @Operation(summary = "发起本人充值单微信支付")
+    public R<AppPaymentPrepayRes> prepay(
+            @PathVariable String rechargeNo, @Valid @RequestBody RechargePaymentReq req) {
+        return R.ok(
+                MemberPaymentStatusConverter.prepay(
+                        prepay.execute(SecurityUtils.getUserId(), rechargeNo, req.appKey())));
+    }
+
+    public record RechargePaymentReq(@NotBlank @Size(max = 64) String appKey) {}
 
     /**
      * 启用中的充值套餐。
@@ -49,12 +67,12 @@ public class AppRechargeController {
     }
 
     /**
-     * 按套餐创建充值单，requestNo 幂等。
+     * 按套餐或自定义金额创建充值单，requestNo 幂等。
      */
     @PostMapping("/wallet/recharges")
     @Operation(summary = "创建充值单")
     public R<WalletRechargeRes> create(@Valid @RequestBody AppRechargeCreateReq req) {
-        var cmd = new WalletRechargeCreateCmd(req.packageId(), req.requestNo());
+        var cmd = new WalletRechargeCreateCmd(req.packageId(), req.amount(), req.requestNo());
         return R.ok(RechargeResConverter.recharge(create.execute(SecurityUtils.getUserId(), cmd)));
     }
 

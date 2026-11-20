@@ -353,7 +353,7 @@ export function PayChannelConfigPage() {
         feeRate: detail.data.feeRate == null ? null : Number(detail.data.feeRate),
         config: '',
       }
-    : { appId: '', code: 'ALIPAY', status: 0, feeRate: 0, remark: '', config: '' };
+    : { appId: '', code: 'WECHAT', status: 0, feeRate: 0, remark: '', config: '' };
   return (
     <PageContainer title="支付渠道配置">
       {rows.isError && (
@@ -473,9 +473,8 @@ export function PayChannelConfigPage() {
             label="渠道编码"
             disabled={!!editor.id}
             options={[
-              { value: 'ALIPAY', label: '支付宝' },
+              { value: 'WALLET', label: '钱包余额' },
               { value: 'WECHAT', label: '微信支付' },
-              { value: 'SANDBOX', label: '沙箱（仅联调）' },
             ]}
             rules={[{ required: true }]}
             extra={editor.id ? '渠道编码创建后不可修改' : undefined}

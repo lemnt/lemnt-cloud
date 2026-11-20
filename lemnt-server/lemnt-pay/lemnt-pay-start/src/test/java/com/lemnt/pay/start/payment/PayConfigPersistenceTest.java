@@ -49,7 +49,7 @@ class PayConfigPersistenceTest {
 
     @BeforeEach
     void setup() {
-        context = new AnnotationConfigApplicationContext(TestConfig.class);
+        context = new AnnotationConfigApplicationContext(TestConfig.class, PaymentPersistenceDependencies.class);
         apps = context.getBean(PayAppGateway.class);
         channels = context.getBean(PayChannelConfigGateway.class);
     }

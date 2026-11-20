@@ -19,8 +19,13 @@ import static org.mockito.Mockito.*;
 class WechatNativePrepayTest {
     final NativePayService service = mock(NativePayService.class);
     final WechatPrepayCommand command =
-        new WechatPrepayCommand(
-            "PAY1", "TR1", new BigDecimal("8.00"), "https://mall.example.com/notify", null);
+            new WechatPrepayCommand(
+                    "PAY1",
+                    "TR1",
+                    new BigDecimal("8.00"),
+                    "https://mall.example.com/notify",
+                    null,
+                    1735689600L);
 
     @Test
     void createMapsBusinessFieldsToNativeRequest() {
@@ -36,6 +41,7 @@ class WechatNativePrepayTest {
         assertEquals("wx-app", request.getAppid());
         assertEquals("1900000001", request.getMchid());
         assertEquals("PAY1", request.getOutTradeNo());
+        assertEquals("2025-01-01T08:00:00+08:00", request.getTimeExpire());
         assertEquals("TR1", request.getAttach());
         assertEquals("https://mall.example.com/notify", request.getNotifyUrl());
         assertEquals(800, request.getAmount().getTotal());
